@@ -1,0 +1,78 @@
+:root {
+  color-scheme: dark;
+  --font-display: "Orbitron", "Chakra Petch", "Segoe UI", "Nirmala UI", "Noto Sans Bengali", sans-serif;
+  --font-ui: "Chakra Petch", "Segoe UI", -apple-system, BlinkMacSystemFont, "Nirmala UI", "Noto Sans Bengali", Arial, sans-serif;
+
+  --bg-primary: #050a08;
+  --bg-sidebar: #08100c;
+  --bg-panel: #0c1612;
+  --bg-raised: #10201a;
+  --bg-panel-hover: #142a20;
+  --bg-input: #070e0b;
+
+  --color-primary: #1fdc8a;
+  --color-primary-hover: #1fdc8a;
+  --color-primary-ink: var(--color-primary);
+  --color-on-primary: #03130b;
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 13%, transparent);
+  --color-primary-line: color-mix(in srgb, var(--color-primary) 42%, transparent);
+
+  --color-text: #eafff4;
+  --color-text-muted: #9cb8a9;
+  --color-text-faint: #73907f;
+  --color-border: #1a2e25;
+  --color-border-strong: #27463a;
+
+  --color-success: #34f5a0;
+  --color-warning: #ffb547;
+  --color-danger: #ff5c6c;
+  --color-info: #4cc3ff;
+  --color-gold: #ffcb47;
+
+  --glow-primary: 0 0 0 1px var(--color-primary-line), 0 0 22px color-mix(in srgb, var(--color-primary) 28%, transparent);
+  --shadow-panel: 0 18px 40px rgba(0, 0, 0, .35);
+  --shadow-pop: 0 30px 90px rgba(0, 0, 0, .55);
+  --page-glow: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --grid-line: rgba(80, 255, 170, .035);
+
+  --sidebar-width: 264px;
+  --sidebar-rail: 78px;
+  --topbar-height: 68px;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --cut: 9px;
+  font-family: var(--font-ui);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-primary: #edf3ef;
+  --bg-sidebar: #f8fbf9;
+  --bg-panel: #ffffff;
+  --bg-raised: #f3f8f5;
+  --bg-panel-hover: #e8f2ec;
+  --bg-input: #f6faf8;
+
+  --color-primary-ink: color-mix(in srgb, var(--color-primary) 58%, #000);
+  --color-on-primary: #03130b;
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  --color-primary-line: color-mix(in srgb, var(--color-primary) 55%, transparent);
+
+  --color-text: #0b1a12;
+  --color-text-muted: #496155;
+  --color-text-faint: #6a8175;
+  --color-border: #d4e3da;
+  --color-border-strong: #b9d0c3;
+
+  --color-success: #0b9658;
+  --color-warning: #b26a00;
+  --color-danger: #d23349;
+  --color-info: #1673c4;
+  --color-gold: #a56c00;
+
+  --glow-primary: 0 0 0 1px var(--color-primary-line), 0 8px 22px color-mix(in srgb, var(--color-primary) 22%, transparent);
+  --shadow-panel: 0 12px 30px rgba(18, 52, 34, .07);
+  --shadow-pop: 0 30px 80px rgba(18, 52, 34, .22);
+  --page-glow: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  --grid-line: rgba(10, 80, 45, .045);
+}

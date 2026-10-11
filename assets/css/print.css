@@ -1,0 +1,10 @@
+#receipt-print { display:none; }
+@media print {
+  @page { size:80mm auto; margin:4mm; }
+  body * { visibility:hidden!important; }
+  #receipt-print, #receipt-print * { visibility:visible!important; }
+  #receipt-print { display:block!important; position:absolute; left:0; top:0; width:72mm; color:#000; background:#fff; font:11px/1.4 "Courier New",monospace; }
+  #receipt-print h1 { font:700 17px/1.2 Arial,sans-serif; letter-spacing:1px; text-align:center; }
+  .receipt-center { text-align:center; }.receipt-rule { border-top:1px dashed #222; margin:8px 0; }
+  .receipt-row { display:flex; justify-content:space-between; gap:8px; }.receipt-total { font-size:14px; font-weight:700; }
+}
