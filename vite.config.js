@@ -20,6 +20,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,woff2}"],
+        globIgnores: ["404.html"],
         // Page URLs like /salary are app routes: serve the cached app shell for them (offline reloads too).
         navigateFallback: "index.html",
         navigateFallbackDenylist: [/^\/assets\//, /\/[^/?]+\.[a-z0-9]+$/i],

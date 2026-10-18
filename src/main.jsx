@@ -29,7 +29,7 @@ import "./styles/modals.css";
 import "./styles/print.css";
 import "./styles/app-shell.css";
 
-// A page file from an older deploy is gone (Vercel replaced it): reload once to get the new version.
+// A page file from an older deploy is gone (a new Netlify deploy replaced it): reload once to get the new version.
 window.addEventListener("vite:preloadError", (event) => {
   if (reloadForNewVersion()) event.preventDefault();
 });

@@ -14,7 +14,7 @@ export const pageNames = {
 
 /**
  * Each page has its own URL (/ for Tables, /salary, /reports, ...) so a reload or a shared link
- * opens the same page. vercel.json rewrites these paths to index.html.
+ * opens the same page. netlify.toml rewrites these paths to index.html.
  */
 const pathFor = (page) => (page === "tables" ? "/" : `/${page}`);
 const pageFromPath = () => {

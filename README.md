@@ -81,14 +81,14 @@ Pick a **Day**, **Month**, **Year**, **Custom** range or **All** at the top of E
 
 **CSV** downloads exactly what is selected, as all entries, daily totals, monthly totals or totals by category. The file name includes the period, for example `cuecore-expenses-daily-2026-10.csv`. The period logic is in `src/features/expenses/period.js`.
 
-## Deploy to Vercel
+## Deploy to Netlify
 
-Import the repository in Vercel; `vercel.json` sets everything (Vite, `npm run build`, output `dist`). No environment variables are needed.
+Connect the repository in Netlify (Add new site → Import an existing project). `netlify.toml` sets everything: build command `npm run build`, publish directory `dist`, Node 22. No environment variables are needed. A manual deploy also works: run `npm run build` and drag the `dist` folder onto Netlify.
 
 What keeps a reload from showing a blank page:
 
-- **Every page has a URL** (`/`, `/salary`, `/reports`, …). Vercel rewrites those paths to `index.html`, so reloading or opening a shared link shows the same page; unknown paths go to Tables. Missing files under `/assets/` still return a real 404.
-- **Caching:** hashed files in `/assets/` are cached for a year; `index.html`, `sw.js` and the manifest are never cached, so each deploy is picked up on the next load.
-- **New deploys:** if an open tab asks for a page file that a newer deploy removed, the app reloads once to get the new version (`vite:preloadError` + `ErrorBoundary`). Other pages are also downloaded in the background after start-up.
+- **Every page has a URL** (`/`, `/salary`, `/reports`, …). Netlify rewrites those paths to `index.html` (status 200, the address stays the same), so reloading or opening a shared link shows the same page; unknown paths go to Tables. A missing file under `/assets/` returns a real 404 (`public/404.html`) instead of HTML.
+- **Caching:** hashed files in `/assets/` are cached for a year; `index.html`, `sw.js`, `registerSW.js` and the manifest are always revalidated, so each deploy is picked up on the next load.
+- **New deploys:** if an open tab asks for a page file that a newer deploy removed, the app reloads once to get the new version (`vite:preloadError` + `ErrorBoundary`, logic in `src/lib/staleDeploy.js`). Other pages are also downloaded in the background after start-up.
 - **Errors never blank the screen:** pages, popups and the whole app sit inside error boundaries that show a Reload button.
 - **Loading:** `index.html` has a built-in loading screen and applies the saved theme before scripts run. The service worker serves the app shell offline.
