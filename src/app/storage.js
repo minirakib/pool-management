@@ -19,6 +19,8 @@ export function loadState() {
   // Data saved before the salary feature has no payroll records or salary amounts.
   parsed.salaries ??= [];
   parsed.staff.forEach((member) => { member.salary ??= 0; });
+  // Product categories became editable; start from the old fixed list plus any in use.
+  parsed.productCategories ??= [...new Set(["Soft Drinks", "Water", "Snacks", "Tea & Coffee", "Accessories", ...parsed.products.map((p) => p.category)])];
   return parsed;
 }
 

@@ -26,6 +26,7 @@ import "./styles/pages.css";
 import "./styles/responsive.css";
 import "./styles/features.css";
 import "./styles/modals.css";
+import "./styles/inventory.css";
 import "./styles/print.css";
 import "./styles/app-shell.css";
 

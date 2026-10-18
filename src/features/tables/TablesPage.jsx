@@ -6,6 +6,7 @@ import { useUi } from "../../app/ui.jsx";
 import Icon from "../../components/Icon.jsx";
 import { LiveAmount, Timer } from "../../components/Live.jsx";
 import SnookerTable, { MiniTable } from "../../components/SnookerTable.jsx";
+import TableOverlay from "../../components/TableOverlay.jsx";
 import { EmptyState, PageHeading, SearchBox, Select, StatusPill } from "../../components/ui.jsx";
 import { categories } from "../../lib/constants.js";
 import { csvDownload } from "../../lib/download.js";
@@ -72,12 +73,13 @@ function TableCard({ table }) {
         <div className="snooker-head"><div className="snooker-title">{table.name}</div><div className="snooker-meta">{table.category} · {money(table.rate)}/hour</div></div>
         <StatusPill status={table.status} />
       </div>
-      <SnookerTable cloth={clothFor(table, state.settings)} />
+      {/* The running timer sits in the middle of the table; the price stays bottom right. */}
+      <SnookerTable cloth={clothFor(table, state.settings)}>{session && <TableOverlay table={table} session={session} />}</SnookerTable>
       <div className="snooker-card-bottom">
         <div className="session-identity">
           <strong>{label}</strong>
           <span>{session
-            ? <><Timer session={session} /> · Started {timeLabel(session.originalStartedAt || session.startedAt)}</>
+            ? `Started ${timeLabel(session.originalStartedAt || session.startedAt)} · ${session.billingMode === "hour" ? "per started hour" : "per minute"}`
             : table.status === "available" ? "Available now" : "Temporarily out of play"}</span>
         </div>
         <div className="table-charge">

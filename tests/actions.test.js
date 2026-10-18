@@ -158,3 +158,22 @@ test("stale-deploy errors are recognised so the app reloads instead of going bla
   assert.ok(isChunkError(new TypeError("Importing a module script failed.")));
   assert.ok(!isChunkError(new Error("Cannot read properties of undefined")));
 });
+
+test("product categories: add, rename (moves products), delete only when empty, create from the product form", () => {
+  const s = fresh();
+  assert.match(actions.addProductCategory(s, "  Energy   Drinks "), /Energy Drinks/);
+  assert.throws(() => actions.addProductCategory(s, "energy drinks"), /already exists/);
+  assert.throws(() => actions.addProductCategory(s, "  "), /Enter a category/);
+
+  actions.renameProductCategory(s, "Snacks", "Chips & Nuts");
+  assert.ok(s.products.filter((p) => p.category === "Chips & Nuts").length >= 3);
+  assert.ok(!s.productCategories.includes("Snacks"));
+  assert.throws(() => actions.deleteProductCategory(s, "Chips & Nuts"), /Move or delete/);
+  actions.deleteProductCategory(s, "Energy Drinks");
+  assert.ok(!s.productCategories.includes("Energy Drinks"));
+
+  actions.saveProduct(s, "", { name: "Red Bull", sku: "ENG-001", category: "__new__", newCategory: "Energy", cost: "90", price: "160", stock: "12", threshold: "4" });
+  assert.equal(s.products.at(-1).category, "Energy");
+  assert.ok(s.productCategories.includes("Energy"));
+  assert.throws(() => actions.saveProduct(s, "", { name: "X", sku: "X-1", category: "Nope", cost: "1", price: "2", stock: "1", threshold: "1" }), /Choose a category/);
+});

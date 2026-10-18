@@ -8,6 +8,7 @@ import Icon from "../../components/Icon.jsx";
 import { LiveAmount, Timer } from "../../components/Live.jsx";
 import Modal, { CloseFooter, FormFooter, useFormAttempt } from "../../components/Modal.jsx";
 import SnookerTable, { ClothPicker } from "../../components/SnookerTable.jsx";
+import TableOverlay from "../../components/TableOverlay.jsx";
 import { AnalyticsStrip, Avatar, Field, ReadonlyField, Select, StatusPill } from "../../components/ui.jsx";
 import { categories, clothColors, paymentMethods } from "../../lib/constants.js";
 import { calculateTableCharge, customerName, sessionBreakdown } from "../../lib/domain.js";
@@ -234,7 +235,7 @@ export function TableDetailsModal({ tableId }) {
         </CloseFooter>
       }>
       <div className="table-detail-hero" data-status={table.status}>
-        <SnookerTable cloth={clothFor(table, state.settings)} />
+        <SnookerTable cloth={clothFor(table, state.settings)}>{session && <TableOverlay table={table} session={session} />}</SnookerTable>
         <div className="table-detail-facts">
           <StatusPill status={table.status} />
           <div className="detail-fact"><span>Rate</span><strong>{money(table.rate)}<small>/hr</small></strong></div>
@@ -249,7 +250,6 @@ export function TableDetailsModal({ tableId }) {
           <div className="profile-hero">
             <Avatar name={name} />
             <div><strong>{name}</strong><span style={muted}>Started {timeLabel(session.originalStartedAt || session.startedAt)} · {session.billingMode === "hour" ? "Started hour" : "Per minute"}</span></div>
-            <div className="detail-live"><Timer session={session} /><strong><LiveAmount session={session} table={table} previousBalance={previousBalance} /></strong></div>
           </div>
           <div className="breakdown-list">
             <div className="breakdown-row"><span>Table charge</span><strong><LiveAmount session={session} table={table} field="tableCharge" /></strong></div>

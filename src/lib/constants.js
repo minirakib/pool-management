@@ -1,7 +1,9 @@
 export const categories = ["Standard", "Premium", "VIP", "Billiards"];
 export const expenseCategories = ["Rent", "Electricity", "Staff Salary", "Maintenance", "Equipment", "Internet", "Cleaning", "Other"];
 export const expenseMethods = ["Cash", "bKash", "Nagad", "Card", "Bank transfer"];
-export const productCategories = ["Soft Drinks", "Water", "Snacks", "Tea & Coffee", "Accessories"];
+/** Icon per product category; custom categories fall back to a box. Categories themselves live in state.productCategories. */
+const PRODUCT_ICONS = { Water: "droplet", "Soft Drinks": "bottle", "Tea & Coffee": "cup", Accessories: "cue", Snacks: "cookie" };
+export const productIcon = (category) => PRODUCT_ICONS[category] || "box";
 export const paymentMethods = ["Cash", "bKash", "Nagad", "Card", "Customer Credit"];
 export const salaryMethods = ["Cash", "Bank transfer", "bKash", "Nagad"];
 

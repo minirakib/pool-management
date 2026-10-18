@@ -50,8 +50,6 @@ button.mini-stat:focus-visible { outline: 2px solid var(--color-primary); outlin
 .detail-fact small { color: var(--color-text-muted); font-size: 11px; font-weight: 600; }
 .detail-note { margin: 0; font-size: 12px; }
 .detail-section { margin-top: 16px; }
-.detail-live { display: grid; justify-items: end; gap: 2px; margin-left: auto; text-align: right; }
-.detail-live strong { color: var(--color-gold); font-family: var(--font-display); font-size: 20px; font-weight: 800; }
 .detail-empty { margin: 14px 0 0; padding: 12px 14px; border: 1px dashed var(--color-border-strong); border-radius: 10px; font-size: 13px; }
 .detail-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--color-border); }
 .detail-heading { margin: 0 0 10px; color: var(--color-text-faint); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
@@ -228,3 +226,31 @@ input.heading-select { padding-right: 11px; background-image: none; color-scheme
   .period-custom input { flex: 1; min-width: 0; }
 }
 @media (max-width: 640px) { .period-bar .toolbar-spacer { display: none; } .period-bar > select { flex: 1 1 40%; } }
+
+/* ---------- Timer badge centred on the table artwork ---------- */
+.snooker-art { container-type: inline-size; }
+.table-overlay { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; padding: 8%; pointer-events: none; }
+.table-badge {
+  --state: var(--color-info);
+  display: grid; justify-items: center; gap: .15em;
+  min-width: 38%; padding: .55em 1.1em .6em;
+  border: 1px solid color-mix(in srgb, var(--state) 55%, transparent); border-radius: 14px;
+  background: rgba(3, 10, 7, .62);
+  backdrop-filter: blur(4px) saturate(120%); -webkit-backdrop-filter: blur(4px) saturate(120%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45), 0 0 22px color-mix(in srgb, var(--state) 22%, transparent), inset 0 1px 0 rgba(255, 255, 255, .08);
+  color: #eafff4; font-size: clamp(11px, 3.6cqi, 16px); line-height: 1.1; text-align: center;
+}
+.table-badge[data-state="occupied"] { --state: var(--color-success); }
+.table-badge[data-state="paused"] { --state: var(--color-warning); }
+.table-badge[data-state="maintenance"] { --state: var(--color-danger); }
+.badge-label { display: inline-flex; align-items: center; gap: .45em; color: var(--state); font-size: .72em; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
+.badge-label i { width: .55em; height: .55em; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
+.table-badge[data-state="occupied"] .badge-label i { animation: led-pulse 1.6s ease-in-out infinite; }
+.table-badge .badge-time { font-family: var(--font-display); font-size: clamp(17px, 7.4cqi, 34px); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .04em; color: #eafff4; text-shadow: 0 0 14px color-mix(in srgb, var(--state) 55%, transparent); }
+.table-badge[data-state="paused"] .badge-time { color: color-mix(in srgb, var(--color-warning) 70%, #fff); }
+/* Paused / service tables dim only the cloth, so the badge on top stays sharp. */
+[data-status="paused"] .snooker-art:has(.table-overlay), [data-status="maintenance"] .snooker-art:has(.table-overlay) { filter: none; }
+[data-status="paused"] .snooker-art:has(.table-overlay) .table-inner { filter: saturate(.55) brightness(.82); }
+[data-status="maintenance"] .snooker-art:has(.table-overlay) .table-inner { filter: grayscale(.8) brightness(.58); }
+/* Card bottom row: who and since when on the left, the bill or hourly price on the right. */
+.snooker-card-bottom { align-items: flex-end; }

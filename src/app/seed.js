@@ -78,6 +78,7 @@ export function createDemoState() {
     version: 1,
     settings: { clubName: "Green Pocket Snooker Club", address: "27 Lake Circus, Kalabagan, Dhaka", phone: "+880 1712-000 555", currency: "BDT", symbol: "৳", defaultRate: 250, billingMode: "minute", minimumCharge: 0, theme: "dark", accent: "#1fdc8a", defaultCloth: "green" },
     tables, sessions, customers, products, transactions,
+    productCategories: ["Soft Drinks", "Water", "Snacks", "Tea & Coffee", "Accessories"],
     bookings: [
       { id: "bok-01", customerId: "cus-001", tableId: "tbl-02", date: localDate(), start: "17:00", duration: 2, phone: "01712 345 678", status: "Confirmed", notes: "Corner table preferred" },
       { id: "bok-02", customerId: "cus-003", tableId: "tbl-02", date: localDate(), start: "19:30", duration: 1, phone: "01911 807 265", status: "Pending", notes: "" },

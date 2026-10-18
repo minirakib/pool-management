@@ -5,13 +5,12 @@ import { useUi } from "../../app/ui.jsx";
 import Icon from "../../components/Icon.jsx";
 import { LiveAmount, Timer } from "../../components/Live.jsx";
 import { EmptyState, PageHeading, SearchBox, Select, StatusPill } from "../../components/ui.jsx";
-import { paymentMethods, productCategories } from "../../lib/constants.js";
+import { paymentMethods, productIcon } from "../../lib/constants.js";
 import { customerName, sessionBreakdown } from "../../lib/domain.js";
 import { useNow } from "../../hooks/useNow.js";
 import { money, shortDate, timeLabel, todayISO } from "../../lib/format.js";
 import { useTableActions } from "../tables/useTableActions.jsx";
 
-const PRODUCT_ICON = { Water: "droplet", "Tea & Coffee": "cup", Accessories: "cue", Snacks: "cookie" };
 
 /** Sum of every open table bill; ticks every second. */
 function LiveTotal({ sessions }) {
@@ -105,13 +104,13 @@ export default function PosPage() {
         <section>
           <SearchBox className="page-search" placeholder="Search products…" value={search} onChange={setSearch} />
           <div className="category-bar">
-            {["All", ...productCategories].map((c) => <button key={c} className={`filter-pill${category === c ? " active" : ""}`} onClick={() => setCategory(c)}>{c}</button>)}
+            {["All", ...state.productCategories].map((c) => <button key={c} className={`filter-pill${category === c ? " active" : ""}`} onClick={() => setCategory(c)}>{c}</button>)}
           </div>
           {products.length ? (
             <div className="product-grid">
               {products.map((p) => (
                 <article key={p.id} className="product-card">
-                  <span className="product-glyph"><Icon name={PRODUCT_ICON[p.category] || "bottle"} /></span>
+                  <span className="product-glyph"><Icon name={productIcon(p.category)} /></span>
                   <strong>{p.name}</strong>
                   <span>{p.category} · {p.stock} in stock</span>
                   <div className="product-foot"><b>{money(p.price)}</b><button className="button button-sm button-primary" onClick={() => addToCart(p)} disabled={p.stock <= 0}><Icon name="plus" />Add</button></div>

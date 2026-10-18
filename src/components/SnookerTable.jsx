@@ -9,11 +9,15 @@ const BALLS = [
 const POCKETS = ["tl", "tc", "tr", "bl", "bc", "br"];
 const Pockets = () => POCKETS.map((p) => <i key={p} className={`pocket ${p}`}></i>);
 
-/** CSS-drawn snooker table with balls. `cloth` is a colour id from clothColors (default green). */
-export default function SnookerTable({ cloth = "green" }) {
+/**
+ * CSS-drawn snooker table with balls. `cloth` is a colour id from clothColors (default green).
+ * `children` are centred on the cloth (e.g. <TableOverlay> with the live time and price).
+ */
+export default function SnookerTable({ cloth = "green", children }) {
   return (
-    <div className="snooker-art" data-cloth={cloth} role="img" aria-label="Top-down snooker table illustration">
-      <div className="table-inner">
+    // With an overlay the artwork is decorative and the overlay text is what screen readers get.
+    <div className="snooker-art" data-cloth={cloth} {...(children ? {} : { role: "img", "aria-label": "Top-down snooker table illustration" })}>
+      <div className="table-inner" aria-hidden={children ? true : undefined}>
         <span className="table-baulk"></span>
         <span className="table-d"></span>
         <Pockets />
@@ -21,6 +25,7 @@ export default function SnookerTable({ cloth = "green" }) {
           <i key={index} className={`ball ${color}`} style={{ left: `${x}%`, top: `${y}%` }}></i>
         ))}
       </div>
+      {children && <div className="table-overlay">{children}</div>}
     </div>
   );
 }
