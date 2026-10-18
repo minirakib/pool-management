@@ -46,12 +46,14 @@
 }
 .snooker-art::before { content: ""; position: absolute; inset: 3px; border: 1px solid rgba(230,185,120,.35); border-radius: 10px; pointer-events: none; }
 .table-inner {
+  /* Cloth colours. Defaults are the classic green; [data-cloth] presets below override them. */
+  --cloth-light: #12804f; --cloth-mid: #0b5c39; --cloth-dark: #0d5136; --cloth-rail: #1a6d45; --cloth-glow: rgba(140,255,170,.22);
   position: relative; height: 100%; overflow: hidden;
-  border: 4px solid #1a6d45; border-radius: 4px;
+  border: 4px solid var(--cloth-rail); border-radius: 4px;
   background:
-    radial-gradient(ellipse 60% 70% at 50% 45%, rgba(140,255,170,.22), transparent 70%),
+    radial-gradient(ellipse 60% 70% at 50% 45%, var(--cloth-glow), transparent 70%),
     repeating-linear-gradient(137deg, rgba(255,255,255,.02) 0 1px, transparent 1px 4px),
-    linear-gradient(135deg, #12804f, #0b5c39 52%, #0d5136);
+    linear-gradient(135deg, var(--cloth-light), var(--cloth-mid) 52%, var(--cloth-dark));
   box-shadow: inset 0 3px 10px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .table-inner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.09) 50%, transparent 65%); transform: translateX(-120%); pointer-events: none; }
@@ -101,3 +103,25 @@
 .mini-art { flex: 0 0 auto; width: 84px; height: 46px; padding: 4px; border-radius: 6px; background: linear-gradient(130deg, #8a5a32, #4a2f18); box-shadow: 0 4px 10px rgba(0,0,0,.35); }
 .mini-art .table-inner { border-width: 2px; }
 .mini-art .pocket { min-width: 5px; }
+
+/* ---------- Board (cloth) colours ---------- */
+[data-cloth="blue"] .table-inner { --cloth-light: #1f6fb8; --cloth-mid: #13508a; --cloth-dark: #0f416f; --cloth-rail: #1c5e99; --cloth-glow: rgba(140,200,255,.22); }
+[data-cloth="red"] .table-inner { --cloth-light: #a8323a; --cloth-mid: #7d1f27; --cloth-dark: #67191f; --cloth-rail: #8a2a31; --cloth-glow: rgba(255,150,150,.2); }
+[data-cloth="purple"] .table-inner { --cloth-light: #6b3fa8; --cloth-mid: #4c2a80; --cloth-dark: #3d2168; --cloth-rail: #5a368f; --cloth-glow: rgba(205,160,255,.2); }
+[data-cloth="teal"] .table-inner { --cloth-light: #10857f; --cloth-mid: #0b625e; --cloth-dark: #09504d; --cloth-rail: #137670; --cloth-glow: rgba(140,255,240,.2); }
+[data-cloth="grey"] .table-inner { --cloth-light: #5b6670; --cloth-mid: #424b53; --cloth-dark: #353c43; --cloth-rail: #4d5760; --cloth-glow: rgba(220,230,240,.18); }
+[data-cloth="black"] .table-inner { --cloth-light: #2e3236; --cloth-mid: #1d1f22; --cloth-dark: #141517; --cloth-rail: #2a2d31; --cloth-glow: rgba(255,255,255,.1); }
+
+.cloth-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.cloth-option { position: relative; cursor: pointer; }
+.cloth-option input { position: absolute; opacity: 0; pointer-events: none; }
+.cloth-option span {
+  display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px 0 6px;
+  border: 1px solid var(--color-border-strong); border-radius: 10px; background: var(--bg-input);
+  color: var(--color-text-muted); font-size: 13px; font-weight: 600; transition: border-color .15s, box-shadow .15s;
+}
+.cloth-option span::before { content: ""; width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, var(--swatch-light), var(--swatch-dark)); box-shadow: inset 0 0 0 3px #6b4425, inset 0 0 0 4px rgba(230,185,120,.35); }
+.cloth-option input:checked + span { border-color: var(--color-primary); color: var(--color-text); box-shadow: 0 0 0 1px var(--color-primary), 0 0 14px color-mix(in srgb, var(--color-primary) 25%, transparent); }
+.cloth-option input:focus-visible + span { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.cloth-preview { width: min(100%, 260px); }
+.cloth-preview .snooker-art { margin: 0; }

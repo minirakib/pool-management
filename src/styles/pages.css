@@ -1,10 +1,10 @@
 /* ---------- Dashboard ---------- */
-.welcome-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 24px; }
-.welcome-row h1 { margin-top: 8px; }
+.welcome-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 14px; }
+.welcome-row h1 { margin: 4px 0 0; font-size: clamp(20px, 1.9vw, 25px); }
 .welcome-row h1 span { color: var(--color-primary-ink); text-shadow: 0 0 22px color-mix(in srgb, var(--color-primary) 45%, transparent); }
 .welcome-row p { margin: 0; color: var(--color-text-muted); font-size: 14px; }
 .welcome-right { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.date-chip { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 1px solid var(--color-border-strong); border-radius: 10px; background: var(--bg-raised); color: var(--color-text-muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.date-chip { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border: 1px solid var(--color-border-strong); border-radius: 10px; background: var(--bg-raised); color: var(--color-text-muted); font-size: 13px; font-weight: 600; white-space: nowrap; }
 .date-chip .ico { color: var(--color-primary-ink); }
 
 .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr); gap: 16px; }

@@ -1,0 +1,97 @@
+/* Large popups: start game and add/edit table. Loaded after features.css. */
+.modal.modal-xl { width: min(980px, 100%); }
+.modal.modal-xl .modal-body { padding: 18px 22px 20px; }
+.footer-hint { margin-right: auto; align-self: center; color: var(--color-text-muted); font-size: 12px; font-weight: 600; }
+.field-label { display: block; color: var(--color-text-muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.field em, .field-label em { color: var(--color-text-faint); font-style: normal; font-weight: 600; text-transform: none; letter-spacing: 0; }
+
+/* Radio buttons shown as a segmented control */
+.choice-group { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; gap: 4px; padding: 4px; border: 1px solid var(--color-border-strong); border-radius: 12px; background: var(--bg-input); }
+.choice { position: relative; display: grid; place-items: center; gap: 1px; min-height: 38px; padding: 6px 8px; border-radius: 8px; color: var(--color-text-muted); text-align: center; cursor: pointer; transition: background .15s, color .15s, box-shadow .15s; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice strong { font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: none; }
+.choice small { color: var(--color-text-faint); font-size: 10.5px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+.choice:hover { color: var(--color-text); }
+.choice.active { background: var(--color-primary-soft); color: var(--color-primary-ink); box-shadow: inset 0 0 0 1px var(--color-primary-line); }
+.choice:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+
+/* ---------- Start game ---------- */
+.start-layout { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 22px; }
+.start-side { display: grid; gap: 14px; align-content: start; padding: 14px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--bg-raised); }
+.start-side .snooker-art { margin: 0; }
+.start-facts, .estimate-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.estimate-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.start-facts > div, .estimate-row > div { min-width: 0; padding: 9px 11px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--bg-panel); }
+.start-facts span, .estimate-row span { display: block; color: var(--color-text-faint); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.start-facts strong, .estimate-row strong { display: block; margin-top: 3px; font-family: var(--font-display); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.start-facts small { color: var(--color-text-muted); font-family: var(--font-ui); font-size: 11px; }
+.estimate-row strong { color: var(--color-gold); font-size: 14px; }
+.start-main { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.customer-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.compact-search { flex: 1 1 240px; max-width: 320px; min-width: 0; }
+.compact-search input { height: 36px; }
+.customer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.customer-tile { position: relative; display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--bg-raised); cursor: pointer; transition: border-color .15s, background .15s, box-shadow .15s; }
+.customer-tile input { position: absolute; opacity: 0; pointer-events: none; }
+.customer-tile:hover { border-color: var(--color-border-strong); background: var(--bg-panel-hover); }
+.customer-tile.active { border-color: var(--color-primary); background: linear-gradient(135deg, var(--color-primary-soft), transparent 80%), var(--bg-raised); box-shadow: 0 0 0 1px var(--color-primary), 0 0 16px color-mix(in srgb, var(--color-primary) 18%, transparent); }
+.customer-tile.active::after { content: "\2713"; position: absolute; top: 6px; right: 8px; color: var(--color-primary-ink); font-size: 12px; font-weight: 900; }
+.customer-tile:has(input:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.customer-tile .avatar { flex-basis: 34px; width: 34px; height: 34px; }
+.tile-icon { display: grid; place-items: center; flex: 0 0 34px; height: 34px; border-radius: 50%; background: color-mix(in srgb, var(--color-info) 14%, transparent); color: var(--color-info); }
+.tile-icon .ico { width: 17px; height: 17px; }
+.tile-copy { min-width: 0; flex: 1; }
+.tile-copy strong, .tile-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile-copy strong { font-size: 13px; }
+.tile-copy small { color: var(--color-text-muted); font-size: 11.5px; }
+.tile-due { position: absolute; right: 8px; bottom: 6px; padding: 1px 6px; border-radius: 6px; background: color-mix(in srgb, var(--color-warning) 14%, transparent); color: var(--color-warning); font-size: 10px; font-weight: 700; }
+.booking-pick { display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 14px; border: 1px dashed color-mix(in srgb, var(--color-info) 55%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--color-info) 8%, transparent); color: var(--color-text); font: inherit; text-align: left; cursor: pointer; }
+.booking-pick > .ico { width: 20px; height: 20px; color: var(--color-info); }
+.booking-pick strong, .booking-pick small { display: block; }
+.booking-pick strong { font-size: 13px; }
+.booking-pick small { color: var(--color-text-muted); font-size: 12px; }
+.booking-pick.active { border-style: solid; border-color: var(--color-primary); background: var(--color-primary-soft); }
+.start-extra { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--color-border); }
+.start-extra .field[hidden] { display: none; }
+.start-extra textarea { min-height: 64px; }
+.link-button { display: inline-flex; align-items: center; gap: 6px; justify-self: start; padding: 4px 0; border: 0; background: transparent; color: var(--color-primary-ink); font: inherit; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.link-button .ico { width: 14px; height: 14px; }
+.balance-note { display: flex; align-items: center; gap: 8px; margin: 0; padding: 9px 12px; border-radius: 10px; background: color-mix(in srgb, var(--color-warning) 10%, transparent); color: var(--color-warning); font-size: 12.5px; font-weight: 600; }
+.balance-note .ico { flex: 0 0 auto; width: 16px; height: 16px; }
+
+/* ---------- Add / edit table ---------- */
+.table-form-layout { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 24px; }
+.table-form-preview { display: grid; gap: 12px; align-content: start; }
+.preview-card { pointer-events: none; box-shadow: none; }
+.preview-card .snooker-art { margin-bottom: 0; }
+.table-form-fields { display: grid; gap: 15px; align-content: start; min-width: 0; }
+.rate-input { display: flex; align-items: center; border: 1px solid var(--color-border-strong); border-radius: 10px; background: var(--bg-input); overflow: hidden; }
+.rate-input:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+.rate-input b { padding: 0 4px 0 14px; color: var(--color-gold); font-family: var(--font-display); font-size: 18px; }
+.field .rate-input input { flex: 1; border: 0; background: transparent; box-shadow: none; font-family: var(--font-display); font-size: 18px; font-weight: 800; }
+.rate-input small { padding: 0 14px; color: var(--color-text-faint); font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.rate-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.rate-presets .filter-pill { padding: 5px 12px; font-family: var(--font-display); font-size: 12px; }
+.cloth-picker.compact { gap: 8px; }
+.cloth-picker.compact .cloth-option span { width: 38px; height: 38px; padding: 0; justify-content: center; border-radius: 50%; }
+.cloth-picker.compact .cloth-option span::before { width: 28px; height: 28px; border-radius: 50%; }
+.cloth-current { color: var(--color-text); font-style: normal; text-transform: none; letter-spacing: 0; }
+
+@media (max-width: 860px) {
+  .start-layout, .table-form-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .start-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .start-side .snooker-art { grid-row: span 2; }
+  .table-form-preview .snooker-card { max-width: 420px; }
+}
+@media (max-width: 640px) {
+  .start-side { grid-template-columns: minmax(0, 1fr); }
+  .start-side .snooker-art { display: none; }
+  /* Who is playing comes first on phones; rate and estimates follow. */
+  .start-main { order: -1; }
+  .customer-grid { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .customer-tile { padding: 8px 12px; }
+  .tile-due { position: static; flex: 0 0 auto; margin-right: 16px; }
+  .compact-search { max-width: none; }
+  .footer-hint { display: none; }
+  .choice-group { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

@@ -1,4 +1,4 @@
-import { money, todayISO } from "./utils.js";
+import { money, todayISO } from "./format.js";
 
 export function billableMilliseconds(session, now = Date.now()) {
   return session.accumulatedMs + (session.pausedAt ? 0 : Math.max(0, now - session.startedAt));
@@ -50,3 +50,6 @@ export function monthlyExpense(state) {
 }
 
 export const currency = money;
+
+/** Net pay for a salary entry: base + bonus + overtime − deduction − advance. */
+export const salaryNet = (r) => (r.base || 0) + (r.bonus || 0) + (r.overtime || 0) - (r.deduction || 0) - (r.advance || 0);

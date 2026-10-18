@@ -1,44 +1,4 @@
-export const $ = (selector, root = document) => root.querySelector(selector);
-export const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-export const escapeHTML = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
-  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-})[char]);
-export const money = (amount) => `৳${Math.round(Number(amount) || 0).toLocaleString("en-BD")}`;
-export const dateLabel = (date = new Date()) => new Intl.DateTimeFormat("en-BD", { weekday: "short", day: "numeric", month: "short", year: "numeric" }).format(date);
-export const timeLabel = (value) => new Intl.DateTimeFormat("en-BD", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
-export const shortDate = (value) => value ? new Intl.DateTimeFormat("en-BD", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${value}T12:00:00`)) : "—";
-export const todayISO = () => {
-  const date = new Date();
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-};
-export const uid = (prefix) => `${prefix}-${crypto.randomUUID ? crypto.randomUUID().slice(0, 8) : `${Date.now()}-${Math.random().toString(16).slice(2, 6)}`}`;
-export const durationLabel = (milliseconds) => {
-  const seconds = Math.max(0, Math.floor(milliseconds / 1000));
-  const hours = String(Math.floor(seconds / 3600)).padStart(2, "0");
-  const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
-  const rest = String(seconds % 60).padStart(2, "0");
-  return `${hours}:${minutes}:${rest}`;
-};
-export const initials = (name = "") => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join("") || "G";
-export const option = (value, current) => `<option value="${escapeHTML(value)}" ${String(value) === String(current) ? "selected" : ""}>${escapeHTML(value)}</option>`;
-export const field = (label, name, value = "", type = "text", extra = "") => `
-  <label class="field"><span>${escapeHTML(label)}</span><input name="${escapeHTML(name)}" type="${escapeHTML(type)}" value="${escapeHTML(value)}" ${extra}></label>`;
-export const selectField = (label, name, values, current, extra = "") => `
-  <label class="field"><span>${escapeHTML(label)}</span><select name="${escapeHTML(name)}" ${extra}>${values.map((value) => option(value, current)).join("")}</select></label>`;
-export const textareaField = (label, name, value = "", extra = "") => `
-  <label class="field field-wide"><span>${escapeHTML(label)}</span><textarea name="${escapeHTML(name)}" rows="3" ${extra}>${escapeHTML(value)}</textarea></label>`;
-export const emptyState = (title, description, action = "") => `<div class="empty-state"><span class="empty-icon">${icon("search")}</span><strong>${escapeHTML(title)}</strong><p>${escapeHTML(description)}</p>${action}</div>`;
-export const statusPill = (status) => `<span class="status-pill status-${escapeHTML(String(status).toLowerCase().replace(/\s+/g, "-"))}"><i></i>${escapeHTML(status)}</span>`;
-export const avatar = (name, color = "") => `<span class="avatar" ${color ? `style="--avatar-color:${escapeHTML(color)}"` : ""}>${escapeHTML(initials(name))}</span>`;
-export function csvDownload(filename, rows) {
-  const csv = rows.map((row) => row.map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" }));
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(link.href);
-}
-
+/* Original inline SVG paths (static strings, safe to inject). */
 const iconPaths = {
   dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
   table: '<rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M8 5.5v13"/><circle cx="15" cy="12" r="1.6"/>',
@@ -84,6 +44,19 @@ const iconPaths = {
   bolt: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
   swap: '<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
-  edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>'
+  edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  cash: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/>',
+  undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>'
 };
-export const icon = (name, className = "") => `<svg class="ico${className ? ` ${className}` : ""}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${iconPaths[name] || ""}</svg>`;
+
+export default function Icon({ name, className = "" }) {
+  return (
+    <svg
+      className={`ico${className ? ` ${className}` : ""}`}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      dangerouslySetInnerHTML={{ __html: iconPaths[name] || "" }}
+    />
+  );
+}
