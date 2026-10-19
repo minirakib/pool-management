@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { isChunkError, reloadForNewVersion } from "../lib/staleDeploy.js";
+import { isChunkError, reloadForNewVersion } from "@/lib/staleDeploy.js";
 
 /**
  * Catches render errors so the app never turns into a blank page. Shows a small recovery

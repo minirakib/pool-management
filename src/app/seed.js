@@ -1,3 +1,4 @@
+import { defaultUsers } from "../lib/auth.js";
 const localDate = (offset = 0) => {
   const date = new Date();
   date.setDate(date.getDate() + offset);
@@ -39,13 +40,13 @@ export function createDemoState() {
     ["prd-10", "Cue Tip 10mm", "ACC-001", "Accessories", 80, 150, 6, 3]
   ].map(([id, name, sku, category, cost, price, stock, threshold]) => ({ id, name, sku, category, cost, price, stock, threshold }));
   const tables = [
-    ["tbl-01", "Table 01", "Premium", 300, "occupied", "green"],
-    ["tbl-02", "Table 02", "Standard", 200, "available", "green"],
-    ["tbl-03", "Table 03", "VIP", 500, "occupied", "blue"]
-  ].map(([id, name, category, rate, status, cloth]) => ({ id, name, category, rate, status, cloth, notes: "" }));
+    ["tbl-01", "Table 01", "Premium", 250, 200, "occupied", "red"],
+    ["tbl-02", "Table 02", "Standard", 250, 200, "available", "blue"],
+    ["tbl-03", "Table 03", "VIP", 250, 200, "occupied", "grey"]
+  ].map(([id, name, category, rate, nonAcRate, status, cloth]) => ({ id, name, category, rate, nonAcRate, status, cloth, notes: "" }));
   const sessions = [
-    { id: "ses-01", tableId: "tbl-01", customerId: "cus-001", guestName: "", startedAt: ago(74), accumulatedMs: 0, pausedAt: null, billingMode: "minute", products: [{ productId: "prd-02", name: "Cola 330ml", qty: 2, price: 50 }], notes: "" },
-    { id: "ses-02", tableId: "tbl-03", customerId: "cus-002", guestName: "", startedAt: ago(132), accumulatedMs: 0, pausedAt: null, billingMode: "minute", products: [], notes: "" },
+    { id: "ses-01", tableId: "tbl-01", customerId: "cus-001", guestName: "", startedAt: ago(74), accumulatedMs: 0, pausedAt: null, billingMode: "minute", hourType: "ac", products: [{ productId: "prd-02", name: "Cola 330ml", qty: 2, price: 50 }], notes: "" },
+    { id: "ses-02", tableId: "tbl-03", customerId: "cus-002", guestName: "", startedAt: ago(132), accumulatedMs: 0, pausedAt: null, billingMode: "minute", hourType: "nonac", products: [], notes: "" },
   ];
   const transactions = [
     { id: "tx-01", type: "session", description: "Table 02 · Session", customer: "Tanvir Hossain", amount: 600, method: "Cash", date: `${localDate()}T10:42:00`, tableId: "tbl-02" },
@@ -76,8 +77,10 @@ export function createDemoState() {
   })));
   return {
     version: 1,
-    settings: { clubName: "Green Pocket Snooker Club", address: "27 Lake Circus, Kalabagan, Dhaka", phone: "+880 1712-000 555", currency: "BDT", symbol: "৳", defaultRate: 250, billingMode: "minute", minimumCharge: 0, theme: "dark", accent: "#1fdc8a", defaultCloth: "green" },
+    settings: { clubName: "Green Pocket Snooker Club", address: "27 Lake Circus, Kalabagan, Dhaka", phone: "+880 1712-000 555", currency: "BDT", symbol: "৳", defaultRate: 250, defaultNonAcRate: 200, billingMode: "minute", singleGameMinutes: 15, arcadeCoinPrice: 15, minimumCharge: 0, theme: "dark", accent: "#1fdc8a", defaultCloth: "green" },
     tables, sessions, customers, products, transactions,
+    arcade: { stock: 50, log: [] },
+    users: defaultUsers(),
     productCategories: ["Soft Drinks", "Water", "Snacks", "Tea & Coffee", "Accessories"],
     bookings: [
       { id: "bok-01", customerId: "cus-001", tableId: "tbl-02", date: localDate(), start: "17:00", duration: 2, phone: "01712 345 678", status: "Confirmed", notes: "Corner table preferred" },

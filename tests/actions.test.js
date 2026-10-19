@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import * as actions from "../src/app/actions.js";
+import * as actions from "../src/app/actions/index.js";
 import { createDemoState } from "../src/app/seed.js";
 import { calculateTableCharge, salaryNet, sessionBreakdown } from "../src/lib/domain.js";
 

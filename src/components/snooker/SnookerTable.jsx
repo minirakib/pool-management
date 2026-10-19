@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { clothColors } from "../lib/constants.js";
+import { clothColors } from "@/lib/constants.js";
 
 // Ball positions (x%, y%) on the top-down table: reds triangle, colours on their spots, cue ball.
 const BALLS = [
@@ -11,7 +11,7 @@ const Pockets = () => POCKETS.map((p) => <i key={p} className={`pocket ${p}`}></
 
 /**
  * CSS-drawn snooker table with balls. `cloth` is a colour id from clothColors (default green).
- * `children` are centred on the cloth (e.g. <TableOverlay> with the live time and price).
+ * `children` are centred on the cloth (e.g. <TableOverlay> with the live time and player).
  */
 export default function SnookerTable({ cloth = "green", children }) {
   return (

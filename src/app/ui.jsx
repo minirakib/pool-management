@@ -1,31 +1,24 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import Receipt from "../components/Receipt.jsx";
-import { useStore, useStoreApi } from "./store.jsx";
+import Receipt from "@/components/Receipt.jsx";
+import { canAccess, HOME, pageFromPath, pageNames, pathFor } from "@/app/routes.js";
+import { hashPassword } from "@/lib/auth.js";
+import { useStore, useStoreApi } from "@/app/store.jsx";
 
 const UiContext = createContext(null);
+const SESSION_KEY = "cuecore.signed-in";
+const readSession = () => { try { return localStorage.getItem(SESSION_KEY) || ""; } catch { return ""; } };
 const TOAST_MARK = { success: "✓", warning: "!", error: "×", info: "i" };
-
-export const pageNames = {
-  tables: "Tables", bookings: "Bookings", customers: "Customers",
-  pos: "POS", inventory: "Inventory", expenses: "Expenses", reports: "Reports",
-  staff: "Staff", salary: "Salary", settings: "Settings"
-};
-
-/**
- * Each page has its own URL (/ for Tables, /salary, /reports, ...) so a reload or a shared link
- * opens the same page. netlify.toml rewrites these paths to index.html.
- */
-const pathFor = (page) => (page === "tables" ? "/" : `/${page}`);
-const pageFromPath = () => {
-  const slug = location.pathname.replace(/^\/+|\/+$/g, "").toLowerCase();
-  return pageNames[slug] ? slug : "tables";
-};
 
 /** App-wide UI state: current page, the open modal, toasts and filters shared between pages. */
 export function UiProvider({ children }) {
   const { run } = useStoreApi();
-  const { settings } = useStore();
+  const { settings, users } = useStore();
+  const [userId, setUserId] = useState(readSession);
+  const user = users.find((u) => u.id === userId) || null;
+  const role = user?.role || "";
+  const roleRef = useRef(role);
+  roleRef.current = role;
   const [receipt, setReceipt] = useState(null);
   const [page, setPageState] = useState(pageFromPath);
   const [modal, setModal] = useState(null);
@@ -36,10 +29,14 @@ export function UiProvider({ children }) {
   const returnFocus = useRef(null);
   const toastId = useRef(0);
 
+  const toastTimer = useRef(null);
+
+  // Only one toast at a time: a new notification replaces the current one in the same spot.
   const notify = useCallback((message, type = "success", title = type === "success" ? "Saved" : "Notice") => {
     const id = `toast-${++toastId.current}`;
-    setToasts((list) => [...list, { id, message, type, title }]);
-    setTimeout(() => setToasts((list) => list.filter((t) => t.id !== id)), 4200);
+    setToasts([{ id, message, type, title }]);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToasts((list) => list.filter((t) => t.id !== id)), 4200);
   }, []);
   const dismissToast = useCallback((id) => setToasts((list) => list.filter((t) => t.id !== id)), []);
 
@@ -58,12 +55,13 @@ export function UiProvider({ children }) {
 
   const setPage = useCallback((next) => {
     if (!pageNames[next]) return;
+    if (!canAccess(roleRef.current, next)) { notify(`${pageNames[next]} is for Admin users only.`, "warning", "No access"); return; }
     setPageState(next);
     if (location.pathname !== pathFor(next)) history.pushState({ page: next }, "", pathFor(next));
     document.body.classList.remove("nav-open");
     window.scrollTo({ top: 0 });
     setTimeout(() => document.getElementById("main-content")?.focus({ preventScroll: true }), 0);
-  }, []);
+  }, [notify]);
 
   // Browser back / forward moves between pages; an unknown path is corrected to /.
   useEffect(() => {
@@ -73,6 +71,28 @@ export function UiProvider({ children }) {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
   useEffect(() => { document.title = `${pageNames[page]} · CUECORE`; }, [page]);
+
+  // A User who lands on an Admin page (link, back button, sign-in) is moved to the home page.
+  useEffect(() => {
+    if (role && !canAccess(role, page)) { setPageState(HOME); history.replaceState(null, "", pathFor(HOME)); }
+  }, [role, page]);
+
+  /** Checks the username + password against the stored hash; returns false when they do not match. */
+  const signIn = useCallback(async (username, password) => {
+    const name = username.trim().toLowerCase();
+    const found = users.find((u) => u.username === name);
+    if (!found || found.passwordHash !== await hashPassword(name, password)) return false;
+    try { localStorage.setItem(SESSION_KEY, found.id); } catch { /* private mode: signed in for this tab only */ }
+    setUserId(found.id);
+    return true;
+  }, [users]);
+  const signOut = useCallback(() => {
+    try { localStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
+    setUserId("");
+    setModal(null);
+    setCart([]);
+  }, []);
+  const can = useCallback((target) => canAccess(roleRef.current, target), [role]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * perform(action, ...args): runs a store action and shows its message as a toast.
@@ -96,11 +116,12 @@ export function UiProvider({ children }) {
   }, []);
 
   const value = useMemo(() => ({
+    user, isAdmin: role === "admin", can, signIn, signOut,
     page, setPage, modal, openModal, closeModal, notify, perform, printReceipt,
     reportPeriod, setReportPeriod, cart, setCart,
     search: searches[page] || "",
     setSearch: (text) => setSearches((all) => ({ ...all, [page]: text }))
-  }), [page, setPage, modal, openModal, closeModal, notify, perform, printReceipt, reportPeriod, cart, searches]);
+  }), [user, role, can, signIn, signOut, page, setPage, modal, openModal, closeModal, notify, perform, printReceipt, reportPeriod, cart, searches]);
 
   return (
     <UiContext.Provider value={value}>

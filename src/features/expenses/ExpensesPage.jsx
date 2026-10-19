@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { deleteRecord } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import { ConfirmModal } from "../../components/Modal.jsx";
-import { EmptyState, PageHeading, SearchBox, Select } from "../../components/ui.jsx";
-import { expenseCategories, expenseMethods } from "../../lib/constants.js";
-import { csvDownload } from "../../lib/download.js";
-import { money, monthLabel, shortDate } from "../../lib/format.js";
+import { deleteRecord } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { ConfirmModal } from "@/components/Modal.jsx";
+import { EmptyState, PageHeading, SearchBox, Select } from "@/components/ui";
+import { expenseCategories, expenseMethods } from "@/lib/constants.js";
+import { csvDownload } from "@/lib/download.js";
+import { money, monthLabel, shortDate } from "@/lib/format.js";
 import ExpenseFormModal from "./ExpenseFormModal.jsx";
 import { defaultPeriod, inPeriod, PERIOD_MODES, periodRange, shiftPeriod, switchMode, totalsBy, trendBuckets } from "./period.js";
 

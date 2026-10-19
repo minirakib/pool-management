@@ -227,3 +227,23 @@ td.table-primary, .data-table td .table-primary + .table-sub { font-variant-nume
 @keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
 @keyframes toast-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
 @keyframes toast-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* ---------- Tab counts, text tones, role badges, user rows ---------- */
+.pos-transactions .panel-heading { flex-wrap: wrap; }
+.pos-transactions .panel-heading > div:first-child { margin-right: auto; }
+.tab-count { min-width: 18px; padding: 0 5px; border-radius: 10px; background: var(--bg-raised); color: var(--color-text-faint); font-size: 10px; text-align: center; }
+.segmented button.active .tab-count { background: var(--color-primary); color: var(--bg-primary); }
+
+.text-gold { color: var(--color-gold) !important; }
+/* Role badges: Admin uses the accent, User stays neutral */
+.role-badge:not(.user):not([class*="tier-"]) { border-color: var(--color-primary-line); background: var(--color-primary-soft); color: var(--color-primary-ink); }
+
+.user-row { align-items: center; gap: 12px; }
+.user-row > div { flex: 1; min-width: 0; }
+.user-row em { font-style: normal; font-size: 12px; }
+.user-row .icon-button { width: 34px; height: 34px; }
+.user-row .icon-button .ico { width: 16px; height: 16px; }
+
+.sidebar-actions .sign-out-btn { flex: 0 0 auto; }
+.sidebar-actions .sign-out-btn:hover { border-color: color-mix(in srgb, var(--color-danger) 45%, transparent); color: var(--color-danger); }
+.collapsed .sidebar-actions .button { flex: 0 0 auto; }

@@ -1,10 +1,10 @@
 # CUECORE
 
-CUECORE is a local-first snooker club operations app: live table floor, time-based session billing, counter sales (POS), inventory, customers, bookings, expenses, reports, staff directory, staff salary (payroll) and settings.
+CUECORE is a local-first snooker club operations app: live table floor, time-based session billing (AC / Non-AC, per minute, per hour or single game), bill splitting, counter sales (POS), arcade coin sales, inventory, customers, bookings, expenses, reports, staff directory, staff salary (payroll) and settings.
 
 It is the original HTML/CSS/JS project converted to **React + Vite**. The design, pages, snooker table artwork and behaviour are the same. The original stylesheets are used unchanged.
 
-All records are demo data stored in this browser's `localStorage` under the same key as the HTML version (`cuecore.demo.v1`), so existing saved data keeps working. Nothing is sent to a server. There is no real authentication, role enforcement, payment processing or multi-device sync.
+All records are demo data stored in this browser's `localStorage` under the same key as the HTML version (`cuecore.demo.v1`), so existing saved data keeps working. Nothing is sent to a server. Sign-in and the Admin / User levels run in the browser (see **Users and access**). There is no payment processing or multi-device sync.
 
 ## Run
 
@@ -26,38 +26,70 @@ npm test          # business-logic tests (Node's built-in test runner)
 ## Project structure
 
 ```
-index.html                 WebView / browser entry
+index.html                     WebView / browser entry
+vite.config.js                 Vite + PWA; "@/..." import alias → src/
+jsconfig.json                  Same alias for the editor (go-to-definition, auto-imports)
 src/
-  main.jsx                 Fonts, original CSS (same order), providers
-  App.jsx                  Shell: sidebar + topbar + lazy page switch + modal root
-  app/
-    actions.js             All business operations (start/pause/close session, bookings,
-                           sales, stock, staff, ...). Plain functions, unit tested.
-    store.jsx              Holds state; run(action, ...args) applies an action to a copy,
-                           saves it, and re-renders
-    ui.jsx                 Current page, open modal, toasts, receipt printing, shared filters
-    storage.js             Persistence boundary (localStorage today)
-    seed.js                First-run sample data
-  lib/
-    domain.js              Billing, today-metrics and salary calculations
-    format.js              Money, dates, durations, ids
-    constants.js           Categories and payment methods
-    theme.js               Accent colours
-    download.js            CSV / JSON export
-  components/              Icon, SnookerTable (pool board art), Modal, Live timers,
-                           Receipt, shared field/pill/avatar pieces
-  layout/                  Sidebar, Topbar (quick actions, notifications, profile)
-  features/<page>/         One folder per page with its own modals
-  styles/                  Original CSS files, plus features.css (newer pages) and modals.css (large popups)
-tests/actions.test.js      Billing, sessions, bookings, sales, payroll and validation
+  main.jsx                     Fonts, global styles, providers
+  App.jsx                      Shell: sign-in gate, sidebar + topbar, lazy page switch, modal root
+  app/                         App state and wiring
+    routes.js                  ★ Every page: URL, title, sidebar group/menu, icon, access level, lazy loader
+    store.jsx                  Holds state; run(action, ...args) applies an action to a copy, saves, re-renders
+    ui.jsx                     Signed-in user, current page, modal, toasts, receipt printing, shared filters
+    storage.js                 Persistence boundary (localStorage today) + upgrades for older saved data
+    seed.js                    First-run sample data
+    actions/                   Business operations, one file per area (unit tested)
+      index.js                 Re-exports everything: import { saveBooking } from "@/app/actions"
+      helpers.js               findTable, tableSession, lowStockCount, fail
+      tables.js  pos.js  arcade.js  bookings.js  customers.js  inventory.js
+      expenses.js  staff.js  salary.js  users.js  settings.js  records.js
+  lib/                         Pure helpers, no React
+    domain.js                  Billing (AC/Non-AC, per minute/hour, single game), bill split, metrics, salary
+    auth.js                    Roles, password hashing, starter accounts
+    format.js  constants.js  theme.js  download.js  staleDeploy.js
+  hooks/                       useNow (1-second clock), useDragScroll
+  components/                  Shared across pages
+    ui/                        Building blocks: PageHeading, MiniStats, Segmented, ChoiceGroup, Field,
+                               Select, SearchBox, StatusPill, Avatar, EmptyState, AnalyticsStrip
+                               → import { PageHeading, Segmented } from "@/components/ui"
+    snooker/                   SnookerTable artwork, ClothPicker, TableOverlay (live timer + player)
+    Icon.jsx  Modal.jsx  Live.jsx  Receipt.jsx  ErrorBoundary.jsx
+  layout/                      Sidebar (built from routes.js), Topbar
+  features/<page>/             One folder per page: the page, its popups, page-only CSS
+    tables/                    TablesPage, useTableActions, modals/ (one file per popup)
+    pos/                       PosSalesPage (+ pos.css), PosTablesPage, PosTransactions
+    arcade/                    ArcadePage (+ arcade.css)
+    auth/                      LoginPage (+ login.css)
+    reports/  bookings/  customers/  inventory/  expenses/  staff/  salary/  settings/
+  styles/                      Global CSS; index.css imports them in cascade order
+tests/actions.test.js          Billing, sessions, bookings, sales, payroll and validation
 ```
 
 ### Conventions
 
-- Components never change data directly. They call `run(action, ...args)` from `useStoreApi()`, or `perform(...)` from `useUi()`, which also shows the toast. Actions throw an `Error` with a user-facing message when something isn't allowed.
-- Forms are plain uncontrolled inputs read with `FormData`, the same as the original. Form modals use `useFormAttempt()` to show validation errors inside the dialog.
-- Table and session buttons all go through `useTableActions()`, so Tables, POS and the modals behave the same. Clicking anywhere on a table card opens its details popup.
-- CSS class names are unchanged from the original. Restyle by editing `src/styles/`.
+- **Imports.** UI code imports with the `@/` alias (`@/components/ui`, `@/app/actions`). Files in the same feature folder use `./`. Pure logic that the tests run directly in Node (`src/lib`, `src/app/actions`, `src/app/seed.js`, `features/expenses/period.js`) keeps relative imports, because Node does not know the alias.
+- **Adding a page.** Create `src/features/<name>/<Name>Page.jsx` and add one entry to `src/app/routes.js`. The sidebar, URL, page title, topbar search, access check and lazy loading all come from that entry.
+- **Changing data.** Components never change data directly. They call `run(action, ...args)` from `useStoreApi()`, or `perform(...)` from `useUi()`, which also shows the toast. Actions throw an `Error` with a user-facing message when something is not allowed. New actions go in the matching `src/app/actions/<area>.js` file.
+- **Forms.** Plain uncontrolled inputs read with `FormData`. Form modals use `useFormAttempt()` to show validation errors inside the dialog.
+- **Tables.** Table and session buttons all go through `useTableActions()`, so Tables, POS and the popups behave the same.
+- **Styles.** The global look lives in `src/styles/` (tokens in `variables.css`, form controls in `forms.css`). Styles used by only one page sit next to it and load with it.
+
+## Users and access
+
+Sign in with a username and password. There are two levels:
+
+| Level | Pages |
+|---|---|
+| **Admin** | Everything |
+| **User** | Tables, Bookings, POS (Sales + Table) and Arcade |
+
+Starter accounts: **admin / admin123** and **staff / staff123**. Change them in **Settings → Users** (add, edit, reset password, remove; at least one Admin is always kept). On the pages a User can open, Admin-only controls are hidden: adding or editing tables, the arcade coin price and "Set total", and links to Admin pages.
+
+Passwords are stored as SHA-256 hashes in this browser's storage. This keeps staff on their own pages; it is not protection against someone with full access to the device.
+
+## Arcade
+
+**Arcade** sells arcade coins: enter the number of coins (or tap 5 / 10 / 20 / 30 / 50), see coins × price and the remaining stock, pick the payment method and sell. **Coin stock** adds coins or sets an exact total, with a history of every change. The **Reports** tab shows a daily report (pick a date) and the all-time total by day, with CSV export. The coin price and total coins are also in **Settings → Arcade coins**.
 
 ## Desktop migration
 

@@ -143,3 +143,14 @@
 
 @keyframes felt-sweep { 0% { transform: translateX(-120%); } 55%, 100% { transform: translateX(120%); } }
 .two-col:has(> [style*="display:none"]) { grid-template-columns: minmax(0, 1fr); }
+
+/* ---------- Bill split calculator (close bill) ---------- */
+.split-calc { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--bg-raised); }
+.split-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.split-head > span { margin-right: auto; color: var(--color-text-faint); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.split-result { display: grid; gap: 8px; }
+.split-each { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; color: var(--color-text-muted); font-size: 14px; }
+.split-each strong { color: var(--color-primary-ink); font-family: var(--font-display); font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.split-players { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; }
+.split-players > div { display: flex; justify-content: space-between; gap: 8px; padding: 7px 10px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 13px; color: var(--color-text-muted); }
+.split-players strong { color: var(--color-text); font-variant-numeric: tabular-nums; }

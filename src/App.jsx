@@ -1,24 +1,15 @@
 import { lazy, Suspense, useCallback, useEffect } from "react";
-import { useStorageSync } from "./app/store.jsx";
-import { useUi } from "./app/ui.jsx";
-import ErrorBoundary from "./components/ErrorBoundary.jsx";
-import TablesPage from "./features/tables/TablesPage.jsx";
-import Sidebar from "./layout/Sidebar.jsx";
-import Topbar from "./layout/Topbar.jsx";
+import { HOME, ROUTES } from "@/app/routes.js";
+import { useStorageSync } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import ErrorBoundary from "@/components/ErrorBoundary.jsx";
+import LoginPage from "@/features/auth/LoginPage.jsx";
+import TablesPage from "@/features/tables/TablesPage.jsx";
+import Sidebar from "@/layout/Sidebar.jsx";
+import Topbar from "@/layout/Topbar.jsx";
 
-// Tables is the landing page and ships in the main bundle; every other page loads on first visit.
-const loaders = {
-  bookings: () => import("./features/bookings/BookingsPage.jsx"),
-  customers: () => import("./features/customers/CustomersPage.jsx"),
-  pos: () => import("./features/pos/PosPage.jsx"),
-  inventory: () => import("./features/inventory/InventoryPage.jsx"),
-  expenses: () => import("./features/expenses/ExpensesPage.jsx"),
-  reports: () => import("./features/reports/ReportsPage.jsx"),
-  staff: () => import("./features/staff/StaffPage.jsx"),
-  salary: () => import("./features/salary/SalaryPage.jsx"),
-  settings: () => import("./features/settings/SettingsPage.jsx")
-};
-const pages = { tables: TablesPage, ...Object.fromEntries(Object.entries(loaders).map(([id, load]) => [id, lazy(load)])) };
+// Tables is the landing page and ships in the main bundle; every other page loads on first visit (see app/routes.js).
+const pages = Object.fromEntries(ROUTES.map((r) => [r.id, r.load ? lazy(r.load) : TablesPage]));
 
 /** Shown while a page's code downloads, so the content area is never empty. */
 function PageLoading() {
@@ -26,8 +17,8 @@ function PageLoading() {
 }
 
 export default function App() {
-  const { page, setPage, modal, closeModal, notify } = useUi();
-  const Page = pages[page];
+  const { user, can, page, setPage, modal, closeModal, notify } = useUi();
+  const Page = pages[can(page) ? page : HOME];
 
   useStorageSync(useCallback(() => notify("Demo data changed in another browser tab. Reload to view the latest saved data.", "info", "Local data updated"), [notify]));
 
@@ -35,9 +26,12 @@ export default function App() {
   // instant, and an open tab keeps working even after a new deploy removes the old files.
   useEffect(() => {
     const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1500));
-    const id = idle(() => Object.values(loaders).forEach((load) => load().catch(() => {})));
+    if (!user) return undefined;
+    const id = idle(() => ROUTES.filter((r) => r.load && can(r.id)).forEach((r) => r.load().catch(() => {})));
     return () => (window.cancelIdleCallback || clearTimeout)(id);
-  }, []);
+  }, [user, can]);
+
+  if (!user) return <LoginPage />;
 
   return (
     <>
@@ -46,7 +40,7 @@ export default function App() {
         <section className="main-shell">
           <Topbar />
           <main id="main-content" className="main-content" tabIndex={-1}>
-            <ErrorBoundary resetKey={page} onHome={() => setPage("tables")}>
+            <ErrorBoundary resetKey={page} onHome={() => setPage(HOME)}>
               <Suspense fallback={<PageLoading />}>
                 <Page />
               </Suspense>

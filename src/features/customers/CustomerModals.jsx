@@ -1,11 +1,11 @@
-import * as actions from "../../app/actions.js";
-import { useStore, useStoreApi } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import Modal, { CloseFooter, FormFooter, useFormAttempt } from "../../components/Modal.jsx";
-import { AnalyticsStrip, Avatar, Field, SelectField, TextareaField } from "../../components/ui.jsx";
-import { billableMilliseconds, sessionBreakdown } from "../../lib/domain.js";
-import { durationLabel, money, shortDate } from "../../lib/format.js";
+import * as actions from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import Modal, { CloseFooter, FormFooter, useFormAttempt } from "@/components/Modal.jsx";
+import { AnalyticsStrip, Avatar, Field, SelectField, TextareaField } from "@/components/ui";
+import { billableMilliseconds, sessionBreakdown } from "@/lib/domain.js";
+import { durationLabel, money, shortDate } from "@/lib/format.js";
 
 const MEMBERSHIPS = ["Regular", "Silver", "Gold", "VIP"];
 

@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { lowStockCount } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import { EmptyState, MiniStats, PageHeading } from "../../components/ui.jsx";
-import { useNow } from "../../hooks/useNow.js";
-import { expenseCategories, paymentMethods } from "../../lib/constants.js";
-import { dashboardMetrics, salaryNet } from "../../lib/domain.js";
-import { csvDownload } from "../../lib/download.js";
-import { money, monthISO, monthLabel, shortDate, timeLabel, toISODate } from "../../lib/format.js";
+import { lowStockCount } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { EmptyState, MiniStats, PageHeading } from "@/components/ui";
+import { useNow } from "@/hooks/useNow.js";
+import { expenseCategories, paymentMethods } from "@/lib/constants.js";
+import { dashboardMetrics, salaryNet } from "@/lib/domain.js";
+import { csvDownload } from "@/lib/download.js";
+import { money, monthISO, monthLabel, shortDate, timeLabel, toISODate } from "@/lib/format.js";
+import DailyEarningSheet from "./DailyEarningSheet.jsx";
 import RevenueChart from "./RevenueChart.jsx";
 
 const revenueOf = (t) => t.revenueAmount ?? t.amount;
@@ -62,6 +63,8 @@ export default function ReportsPage() {
   const topCustomers = state.customers.map((c) => ({ c, amount: sum(filtered.filter((t) => t.customer === c.name)) })).filter((e) => e.amount).sort((a, b) => b.amount - a.amount).slice(0, 5);
   const topTables = state.tables.map((table) => ({ table, amount: sum(filtered.filter((t) => t.tableId === table.id)) })).filter((e) => e.amount).sort((a, b) => b.amount - a.amount).slice(0, 5);
   const sales = filtered.filter((t) => t.type === "sale");
+  const arcadeSales = filtered.filter((t) => t.type === "arcade");
+  const allArcade = state.transactions.filter((t) => t.type === "arcade");
   const sessionsClosed = filtered.filter((t) => t.type === "session");
   const recent = [...filtered].reverse().slice(0, 8);
 
@@ -108,6 +111,7 @@ export default function ReportsPage() {
       ["Metric", "Value BDT"],
       ["Revenue", revenue], ["Expenses (incl. salaries)", expenses], ["Salaries paid", sum(salariesPaid, salaryNet)], ["Net", revenue - expenses], [],
       ["Expense category", "Amount BDT"], ...byCategory.map((e) => [e.category, e.amount]), [],
+      ["Arcade coins sold", sum(arcadeSales, (t) => t.coins || 0)], ["Arcade amount BDT", sum(arcadeSales, (t) => t.amount)], [],
       ["Payment method", "Amount BDT"], ...payments.map(({ method, list }) => [method, sum(list, (t) => t.amount)]), [],
       ["Table", "Revenue BDT"], ...topTables.map(({ table, amount }) => [table.name, amount])
     ]);
@@ -162,6 +166,8 @@ export default function ReportsPage() {
           empty={<EmptyState title="No payment records" description="Completed transactions in this range appear here." />} />
       </div>
 
+      <DailyEarningSheet />
+
       <div className="two-col report-row">
         <ListPanel title="Revenue by table" subtitle="Closed sessions in range"
           rows={topTables.map(({ table, amount }) => [table.id, table.name, <>{table.category}<Share value={amount} total={revenue} /></>, money(amount)])}
@@ -197,6 +203,19 @@ export default function ReportsPage() {
             ))
             : <p className="muted" style={{ fontSize: 12, margin: "9px 0 0" }}>Item-level history is recorded for new sales.</p>}
         </article>
+        <article className="panel">
+          <div className="panel-heading"><div><h2>Arcade coins</h2><p>Coin sales in range · all time</p></div><button className="panel-link" onClick={() => setPage("arcade")}>Open arcade <Icon name="arrow-right" /></button></div>
+          <div className="report-kpis">
+            <div><span>Coins sold</span><strong>{sum(arcadeSales, (t) => t.coins || 0)}</strong></div>
+            <div><span>Amount</span><strong className="text-gold">{money(sum(arcadeSales, (t) => t.amount))}</strong></div>
+            <div><span>In stock</span><strong>{state.arcade.stock}</strong></div>
+          </div>
+          <div className="settings-row"><div><strong>All time</strong><span>{allArcade.length} sales · {sum(allArcade, (t) => t.coins || 0)} coins</span></div><strong>{money(sum(allArcade, (t) => t.amount))}</strong></div>
+          <div className="settings-row"><div><strong>Coin price</strong><span>Change in Settings or Arcade</span></div><strong>{money(state.settings.arcadeCoinPrice)}</strong></div>
+        </article>
+      </div>
+
+      <div className="two-col report-row">
         <ListPanel title="Peak hours" subtitle="Observed session starts"
           rows={[...peakHours.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([hour, count]) => [hour, `${pad(hour)}:00 – ${pad((hour + 1) % 24)}:00`, `${count} session start${count === 1 ? "" : "s"}`, count])}
           empty={<EmptyState title="No session history" description="Usage hours appear as sessions are saved." />} />

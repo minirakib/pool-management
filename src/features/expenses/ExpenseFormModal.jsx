@@ -1,9 +1,9 @@
-import * as actions from "../../app/actions.js";
-import { useStore, useStoreApi } from "../../app/store.jsx";
-import Modal, { FormFooter, useFormAttempt } from "../../components/Modal.jsx";
-import { Field, SelectField, TextareaField } from "../../components/ui.jsx";
-import { expenseCategories, expenseMethods } from "../../lib/constants.js";
-import { todayISO } from "../../lib/format.js";
+import * as actions from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import Modal, { FormFooter, useFormAttempt } from "@/components/Modal.jsx";
+import { Field, SelectField, TextareaField } from "@/components/ui";
+import { expenseCategories, expenseMethods } from "@/lib/constants.js";
+import { todayISO } from "@/lib/format.js";
 
 export default function ExpenseFormModal({ expenseId = "" }) {
   const state = useStore();

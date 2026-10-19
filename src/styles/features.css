@@ -254,3 +254,18 @@ input.heading-select { padding-right: 11px; background-image: none; color-scheme
 [data-status="maintenance"] .snooker-art:has(.table-overlay) .table-inner { filter: grayscale(.8) brightness(.58); }
 /* Card bottom row: who and since when on the left, the bill or hourly price on the right. */
 .snooker-card-bottom { align-items: flex-end; }
+
+/* ---------- Daily earning sheet (Reports) ---------- */
+.earning-sheet .panel-heading { flex-wrap: wrap; }
+.earning-sheet-tools { display: flex; align-items: center; gap: 8px; }
+.earning-methods { margin: 0 0 10px; font-size: 12.5px; }
+.earning-table td, .earning-table th { text-align: right; font-variant-numeric: tabular-nums; }
+.earning-table td:first-child, .earning-table th:first-child { text-align: left; }
+.earning-table tr.is-empty td { opacity: .55; }
+.earning-table tfoot td { padding: 13px 12px; border-top: 1px solid var(--color-border-strong); color: var(--color-text); font-weight: 800; }
+/* Player chip under the timer */
+.badge-player { display: inline-flex; align-items: center; gap: .45em; max-width: 100%; margin-top: .35em; padding: .22em .75em .22em .25em; border: 1px solid rgba(255, 255, 255, .12); border-radius: 999px; background: rgba(255, 255, 255, .07); }
+.badge-player-mark { display: grid; place-items: center; flex: 0 0 auto; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--state); color: #04110b; font-size: .78em; font-weight: 800; letter-spacing: .02em; }
+.badge-player-mark .ico { width: 1em; height: 1em; }
+.badge-player-name { min-width: 0; overflow: hidden; font-size: .86em; font-weight: 700; letter-spacing: .02em; text-overflow: ellipsis; white-space: nowrap; color: #eafff4; }
+.table-badge { max-width: 86%; }

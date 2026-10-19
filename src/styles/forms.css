@@ -1,0 +1,87 @@
+/* ==========================================================================
+   Theme-wide form controls. Every text input, number, date / month / time picker,
+   select and textarea gets the theme look, wherever it sits.
+   :where() keeps these at zero specificity, so any component style still wins.
+   ========================================================================== */
+:root { accent-color: var(--color-primary); }
+
+:where(input:not([type="radio"], [type="checkbox"], [type="range"], [type="hidden"], [type="color"], [type="file"], [type="submit"], [type="button"]), select, textarea) {
+  min-width: 0; min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-strong); border-radius: 10px;
+  background-color: var(--bg-input); color: var(--color-text);
+  font-size: 14px; font-weight: 500;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s, background-color .15s;
+}
+:where(textarea) { padding: 9px 12px; line-height: 1.45; }
+:where(input, select, textarea):where(:hover:not(:disabled):not(:focus)) { border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border-strong)); }
+:where(input, select, textarea):where(:focus) { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+:where(input, select, textarea):where(:disabled) { opacity: .6; cursor: not-allowed; }
+:where(input, textarea)::placeholder { color: var(--color-text-faint); opacity: 1; }
+
+/* Select: themed chevron instead of the browser arrow */
+:where(select) {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 36px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2373907f' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 11px center; background-size: 16px;
+}
+select option, select optgroup { background: var(--bg-panel); color: var(--color-text); }
+
+/* Date / month / time pickers: theme font, digits and a themed calendar icon */
+:where(input[type="date"], input[type="month"], input[type="time"], input[type="datetime-local"], input[type="week"]) {
+  font-family: var(--font-ui); font-variant-numeric: tabular-nums; cursor: pointer;
+}
+input::-webkit-datetime-edit { padding: 0; }
+input::-webkit-datetime-edit-fields-wrapper { padding: 0; }
+input::-webkit-datetime-edit-text { color: var(--color-text-faint); padding: 0 2px; }
+input::-webkit-datetime-edit-month-field,
+input::-webkit-datetime-edit-day-field,
+input::-webkit-datetime-edit-year-field,
+input::-webkit-datetime-edit-hour-field,
+input::-webkit-datetime-edit-minute-field,
+input::-webkit-datetime-edit-ampm-field { border-radius: 4px; }
+input::-webkit-datetime-edit-month-field:focus,
+input::-webkit-datetime-edit-day-field:focus,
+input::-webkit-datetime-edit-year-field:focus,
+input::-webkit-datetime-edit-hour-field:focus,
+input::-webkit-datetime-edit-minute-field:focus,
+input::-webkit-datetime-edit-ampm-field:focus { background: var(--color-primary-soft); color: var(--color-primary-ink); }
+input::-webkit-calendar-picker-indicator {
+  width: 16px; height: 16px; margin-left: 8px; padding: 2px;
+  border-radius: 5px; cursor: pointer; opacity: 1;
+  background: var(--color-text-faint);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15.5' rx='2.5'/%3E%3Cpath d='M3.5 10h17M8 3v4M16 3v4'/%3E%3C/svg%3E") center / 16px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='5' width='17' height='15.5' rx='2.5'/%3E%3Cpath d='M3.5 10h17M8 3v4M16 3v4'/%3E%3C/svg%3E") center / 16px no-repeat;
+  transition: background-color .15s;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M12 7.5V12l3 2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M12 7.5V12l3 2'/%3E%3C/svg%3E");
+}
+input:hover::-webkit-calendar-picker-indicator, input:focus::-webkit-calendar-picker-indicator { background: var(--color-primary); }
+
+/* Number inputs: no browser spin arrows (the app has its own − / + steppers) */
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; font-variant-numeric: tabular-nums; }
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Search inputs: themed clear button */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none; width: 14px; height: 14px; cursor: pointer;
+  background: var(--color-text-faint);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+input[type="search"]::-webkit-search-cancel-button:hover { background: var(--color-danger); }
+
+/* Autofill keeps the theme instead of the browser's yellow/blue */
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text);
+  box-shadow: 0 0 0 40px var(--bg-input) inset;
+  caret-color: var(--color-text);
+}
+
+/* Inputs embedded in custom wrappers (they draw their own frame) */
+.arcade-price-form input, .pos-discount-input input, .arcade-qty input { min-height: 0; padding: 0 6px; border: 0; box-shadow: none; }
+.arcade-price-form label, .pos-discount-input, .arcade-qty label { transition: border-color .15s, box-shadow .15s; }
+.arcade-price-form label:focus-within, .pos-discount-input:focus-within, .arcade-qty label:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { generatePayroll } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import { Avatar, EmptyState, PageHeading, SearchBox, StatusPill } from "../../components/ui.jsx";
-import { salaryNet } from "../../lib/domain.js";
-import { csvDownload } from "../../lib/download.js";
-import { money, monthISO, monthLabel, shortDate } from "../../lib/format.js";
+import { generatePayroll } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { Avatar, EmptyState, PageHeading, SearchBox, StatusPill } from "@/components/ui";
+import { salaryNet } from "@/lib/domain.js";
+import { csvDownload } from "@/lib/download.js";
+import { money, monthISO, monthLabel, shortDate } from "@/lib/format.js";
 import { PaySalaryModal, PayslipModal, SalaryFormModal } from "./SalaryModals.jsx";
 
 const shiftMonth = (month, delta) => {

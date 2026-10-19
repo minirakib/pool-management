@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { currentAccent } from "../lib/theme.js";
-import { loadState, resetState, saveState, STORAGE_KEY } from "./storage.js";
+import { currentAccent } from "@/lib/theme.js";
+import { loadState, resetState, saveState, STORAGE_KEY } from "@/app/storage.js";
 
 const StateContext = createContext(null);
 const StoreApiContext = createContext(null);

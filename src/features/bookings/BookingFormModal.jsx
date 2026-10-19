@@ -1,8 +1,8 @@
-import * as actions from "../../app/actions.js";
-import { useStore, useStoreApi } from "../../app/store.jsx";
-import Modal, { FormFooter, useFormAttempt } from "../../components/Modal.jsx";
-import { Field, SelectField, TextareaField } from "../../components/ui.jsx";
-import { todayISO } from "../../lib/format.js";
+import * as actions from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import Modal, { FormFooter, useFormAttempt } from "@/components/Modal.jsx";
+import { Field, SelectField, TextareaField } from "@/components/ui";
+import { todayISO } from "@/lib/format.js";
 
 export default function BookingFormModal({ bookingId = "" }) {
   const state = useStore();

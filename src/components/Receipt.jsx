@@ -1,4 +1,4 @@
-import { durationLabel, money, monthLabel, shortDate, timeLabel } from "../lib/format.js";
+import { durationLabel, money, monthLabel, shortDate, timeLabel } from "@/lib/format.js";
 
 const Row = ({ label, value, className = "" }) => (
   <div className={`receipt-row ${className}`}><span>{label}</span><span>{value}</span></div>
@@ -43,6 +43,8 @@ export default function Receipt({ details, settings }) {
       <Row label="Customer" value={details.customer} />
       {details.startedAt && <Row label="Start" value={timeLabel(details.startedAt)} />}
       <Row label="Closed" value={`${timeLabel(details.endedAt)} · ${shortDate(new Date(details.endedAt).toISOString().slice(0, 10))}`} />
+      {details.rate ? <Row label="Rate" value={`${details.hourType === "nonac" ? "Non-AC" : "AC"} · ${money(details.rate)}/hr · ${details.billingMode === "hour" ? "started hour" : details.billingMode === "game" ? `single game ${details.gameMinutes ?? 15} min + extra min` : "per minute"}`} /> : null}
+      {details.billingMode === "game" && details.duration ? <Row label="Extra minutes" value={`${Math.max(0, Math.floor((details.duration - (details.gameMinutes ?? 15) * 60_000) / 60_000))} min`} /> : null}
       {details.duration ? <Row label="Duration" value={durationLabel(details.duration)} /> : null}
       <div className="receipt-rule"></div>
       {details.tableCharge ? <Row label="Table time" value={money(details.tableCharge)} /> : null}
@@ -51,6 +53,7 @@ export default function Receipt({ details, settings }) {
       {details.discount ? <Row label="Discount" value={`−${money(details.discount)}`} /> : null}
       <div className="receipt-rule"></div>
       <Row label="TOTAL" value={money(details.total)} className="receipt-total" />
+      {details.split?.length > 1 && details.split.map((amount, i) => <Row key={`split-${i}`} label={`Player ${i + 1} of ${details.split.length}`} value={money(amount)} />)}
       <Row label="Payment" value={details.method} />
       <div className="receipt-rule"></div>
       <div className="receipt-center">Thank you for visiting<br />Keep your eye on the cue ball!</div>

@@ -1,7 +1,7 @@
-import { useStore } from "../app/store.jsx";
-import { useNow } from "../hooks/useNow.js";
-import { billableMilliseconds, sessionBreakdown } from "../lib/domain.js";
-import { durationLabel, money } from "../lib/format.js";
+import { useStore } from "@/app/store.jsx";
+import { useNow } from "@/hooks/useNow.js";
+import { billableMilliseconds, sessionBreakdown } from "@/lib/domain.js";
+import { durationLabel, money } from "@/lib/format.js";
 
 // Small components that tick every second. Only they re-render, not the whole page.
 

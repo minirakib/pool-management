@@ -1,21 +1,19 @@
 import { Fragment, useEffect, useState } from "react";
-import { lowStockCount, toggleTheme } from "../app/actions.js";
-import { useStore, useStoreApi } from "../app/store.jsx";
-import { useUi } from "../app/ui.jsx";
-import Icon from "../components/Icon.jsx";
-import { Avatar } from "../components/ui.jsx";
+import { lowStockCount, toggleTheme } from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import { navGroups } from "@/app/routes.js";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { Avatar } from "@/components/ui";
+import { ROLES } from "@/lib/auth.js";
 
-const NAV_GROUPS = [
-  ["Arena", [["tables", "table", "Tables"], ["bookings", "calendar", "Bookings"]]],
-  ["Counter", [["pos", "receipt", "POS"], ["inventory", "box", "Inventory"], ["expenses", "wallet", "Expenses"]]],
-  ["Club", [["customers", "users", "Customers"], ["staff", "badge", "Staff"], ["salary", "cash", "Salary"], ["reports", "chart", "Reports"], ["settings", "settings", "Settings"]]]
-];
 const COLLAPSE_KEY = "cuecore.sidebar-collapsed";
 
 export default function Sidebar() {
   const state = useStore();
   const { run } = useStoreApi();
-  const { page, setPage } = useUi();
+  const { page, setPage, user, signOut } = useUi();
+  const [openMenus, setOpenMenus] = useState({ pos: true });
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(COLLAPSE_KEY) === "1");
   const dark = state.settings.theme !== "light";
   const lowStock = lowStockCount(state);
@@ -38,30 +36,48 @@ export default function Sidebar() {
         <div className="club-copy"><strong>{state.settings.clubName}</strong><span>Dhaka · Main club</span></div>
       </div>
       <nav className="nav-list">
-        {NAV_GROUPS.map(([group, items]) => (
+        {navGroups(user.role).map(([group, items]) => (
           <Fragment key={group}>
             <div className="nav-caption">{group}</div>
-            {items.map(([id, glyph, title]) => (
-              <button key={id} className={`nav-item${page === id ? " active" : ""}`} onClick={() => setPage(id)} title={title} aria-current={page === id ? "page" : "false"}>
-                <span className="nav-icon"><Icon name={glyph} /></span>
-                <span className="nav-label">{title}</span>
-                {id === "inventory" && lowStock > 0 && <span className="nav-count">{lowStock}</span>}
-              </button>
-            ))}
+            {items.map((item) => {
+              const link = (route, key = route.id) => (
+                <button key={key} className={`nav-item${page === route.id ? " active" : ""}`} onClick={() => setPage(route.id)} title={route.title} aria-current={page === route.id ? "page" : "false"}>
+                  <span className="nav-icon"><Icon name={route.icon} /></span>
+                  <span className="nav-label">{route.title}</span>
+                  {route.id === "inventory" && lowStock > 0 && <span className="nav-count">{lowStock}</span>}
+                </button>
+              );
+              if (!item.menu) return link(item);
+              // A menu parent (e.g. POS): opens its first page, then folds / unfolds while you are inside it.
+              const within = item.children.some((r) => r.id === page);
+              const open = within ? openMenus[item.menu] !== false : !!openMenus[item.menu];
+              return (
+                <Fragment key={item.menu}>
+                  <button className={`nav-item nav-parent${within ? " within" : ""}`} aria-expanded={open} title={item.title}
+                    onClick={() => { if (within) setOpenMenus((m) => ({ ...m, [item.menu]: !open })); else { setOpenMenus((m) => ({ ...m, [item.menu]: true })); setPage(item.children[0].id); } }}>
+                    <span className="nav-icon"><Icon name={item.icon} /></span>
+                    <span className="nav-label">{item.title}</span>
+                    <Icon name="chevron-down" className="nav-chevron" />
+                  </button>
+                  <div className={`nav-sub${open ? "" : " closed"}`}>{item.children.map((r) => link(r, `${item.menu}-${r.id}`))}</div>
+                </Fragment>
+              );
+            })}
           </Fragment>
         ))}
       </nav>
       <div className="sidebar-spacer"></div>
       <div className="sidebar-bottom">
         <div className="profile-row">
-          <Avatar name="Mahmud Hasan" />
-          <div className="profile-copy"><strong>Mahmud Hasan</strong><span>Signed in locally</span></div>
-          <span className="role-badge">Owner</span>
+          <Avatar name={user.name} />
+          <div className="profile-copy"><strong>{user.name}</strong><span>@{user.username}</span></div>
+          <span className={`role-badge${user.role === "admin" ? "" : " user"}`}>{ROLES[user.role]}</span>
         </div>
         <div className="sidebar-actions">
           <button className="button button-sm" onClick={() => run(toggleTheme)} title="Switch theme">
             <Icon name={dark ? "sun" : "moon"} /><span className="collapse-text">{dark ? "Light mode" : "Dark mode"}</span>
           </button>
+          <button className="button button-sm sign-out-btn" onClick={signOut} title="Sign out" aria-label="Sign out"><Icon name="undo" /></button>
           <button className="button button-sm collapse-sidebar-btn" onClick={() => setCollapsed((c) => !c)} title="Collapse sidebar" aria-label="Collapse sidebar">
             <Icon name="collapse" className="collapse-icon" />
           </button>

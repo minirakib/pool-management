@@ -1,17 +1,16 @@
-import { clothFor } from "../../lib/theme.js";
+import { clothFor } from "@/lib/theme.js";
 import { useState } from "react";
-import { tableSession } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import { LiveAmount, Timer } from "../../components/Live.jsx";
-import SnookerTable, { MiniTable } from "../../components/SnookerTable.jsx";
-import TableOverlay from "../../components/TableOverlay.jsx";
-import { EmptyState, PageHeading, SearchBox, Select, StatusPill } from "../../components/ui.jsx";
-import { categories } from "../../lib/constants.js";
-import { csvDownload } from "../../lib/download.js";
-import { customerName, dashboardMetrics } from "../../lib/domain.js";
-import { money, timeLabel } from "../../lib/format.js";
+import { tableSession } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { Timer } from "@/components/Live.jsx";
+import SnookerTable, { MiniTable } from "@/components/snooker/SnookerTable.jsx";
+import TableOverlay from "@/components/snooker/TableOverlay.jsx";
+import { EmptyState, PageHeading, SearchBox, Select, StatusPill } from "@/components/ui";
+import { categories } from "@/lib/constants.js";
+import { csvDownload } from "@/lib/download.js";
+import { customerName, dashboardMetrics, hourTypeLabel, rateFor } from "@/lib/domain.js";
 import { useTableActions } from "./useTableActions.jsx";
 
 // [status, pill label, tone]; COUNT_KEY maps a status to its dashboardMetrics count.
@@ -26,13 +25,13 @@ export function TableActionButtons({ table }) {
     <>
       <button className="button button-primary button-sm" onClick={() => act.start(id)}><Icon name="play" />Start game</button>
       <button className="button button-sm" onClick={() => act.details(id)}>Details</button>
-      <button className="icon-button" onClick={() => act.edit(id)} aria-label="Edit table"><Icon name="more" /></button>
+      {act.canEdit && <button className="icon-button" onClick={() => act.edit(id)} aria-label="Edit table"><Icon name="more" /></button>}
     </>
   );
   if (table.status === "maintenance") return (
     <>
       <button className="button button-sm" onClick={() => act.details(id)}>Details</button>
-      <button className="button button-sm" onClick={() => act.edit(id)}>Edit</button>
+      {act.canEdit && <button className="button button-sm" onClick={() => act.edit(id)}>Edit</button>}
       <button className="button button-sm" onClick={() => act.release(id)}><Icon name="check" />Set available</button>
     </>
   );
@@ -48,7 +47,7 @@ export function TableActionButtons({ table }) {
 }
 
 function mainLabel(table, customer) {
-  return { occupied: customer, paused: "Session paused", maintenance: "Service required" }[table.status] || "Ready for a frame";
+  return { occupied: customer, paused: "Session paused", maintenance: "Service required" }[table.status] || "";
 }
 
 /** Makes a whole card/row open the table details popup; action buttons inside stop the click. */
@@ -65,28 +64,15 @@ const stop = (e) => e.stopPropagation();
 function TableCard({ table }) {
   const state = useStore();
   const session = tableSession(state, table);
-  const label = mainLabel(table, session ? customerName(state, session) : "");
   return (
     <article className="snooker-card clickable" data-status={table.status} {...useOpenDetails(table)}>
       <div className="snooker-card-top">
         <span className="table-number">{tableNumber(table)}</span>
-        <div className="snooker-head"><div className="snooker-title">{table.name}</div><div className="snooker-meta">{table.category} · {money(table.rate)}/hour</div></div>
+        <div className="snooker-head"><div className="snooker-title">{table.name}</div><div className="snooker-meta">{table.category}</div></div>
         <StatusPill status={table.status} />
       </div>
-      {/* The running timer sits in the middle of the table; the price stays bottom right. */}
+      {/* Only the running timer shows on the card; the player, rate and bill are in the details popup. */}
       <SnookerTable cloth={clothFor(table, state.settings)}>{session && <TableOverlay table={table} session={session} />}</SnookerTable>
-      <div className="snooker-card-bottom">
-        <div className="session-identity">
-          <strong>{label}</strong>
-          <span>{session
-            ? `Started ${timeLabel(session.originalStartedAt || session.startedAt)} · ${session.billingMode === "hour" ? "per started hour" : "per minute"}`
-            : table.status === "available" ? "Available now" : "Temporarily out of play"}</span>
-        </div>
-        <div className="table-charge">
-          <strong>{session ? <LiveAmount session={session} table={table} /> : money(table.rate)}</strong>
-          <span>{session ? "current bill" : "per hour"}</span>
-        </div>
-      </div>
       <div className="snooker-actions" onClick={stop} onKeyDown={stop}><TableActionButtons table={table} /></div>
     </article>
   );
@@ -97,13 +83,13 @@ function CompactTableRow({ table }) {
   const session = tableSession(state, table);
   return (
     <article className="compact-table-row clickable" data-status={table.status} {...useOpenDetails(table)}>
-      <div className="compact-ident"><MiniTable cloth={clothFor(table, state.settings)} /><div><strong className="table-primary">{table.name}</strong><span className="table-sub">{table.category} · {money(table.rate)}/hr</span></div></div>
+      <div className="compact-ident"><MiniTable cloth={clothFor(table, state.settings)} /><div><strong className="table-primary">{table.name}</strong><span className="table-sub">{table.category}</span></div></div>
       <div><StatusPill status={table.status} /><span className="table-sub">{mainLabel(table, session ? customerName(state, session) : "")}</span></div>
       <div>
         <strong className="table-primary">{session ? <Timer session={session} className="" /> : "—"}</strong>
-        <span className="table-sub">{session ? <LiveAmount session={session} table={table} /> : "No session"}</span>
+        <span className="table-sub">{session ? "playing time" : "No session"}</span>
       </div>
-      <div className="table-sub">Rate {money(table.rate)}/hour</div>
+      <div className="table-sub">{session ? hourTypeLabel(session.hourType) : ""}</div>
       <div className="table-actions" onClick={stop} onKeyDown={stop}><TableActionButtons table={table} /></div>
     </article>
   );
@@ -124,7 +110,7 @@ export default function TablesPage() {
     `${t.name} ${t.category}`.toLowerCase().includes(search.toLowerCase()));
 
   const exportCsv = () => {
-    csvDownload("cuecore-tables.csv", [["Table", "Category", "Hourly rate BDT", "Status"], ...state.tables.map((t) => [t.name, t.category, t.rate, t.status])]);
+    csvDownload("cuecore-tables.csv", [["Table", "Category", "AC hourly rate BDT", "Non-AC hourly rate BDT", "Status"], ...state.tables.map((t) => [t.name, t.category, rateFor(t, "ac"), rateFor(t, "nonac"), t.status])]);
     notify("cuecore-tables.csv downloaded.", "success", "Export ready");
   };
 
@@ -141,7 +127,7 @@ export default function TablesPage() {
           <button className={view === "list" ? "active" : ""} onClick={() => setView("list")} aria-label="List view" title="List view"><Icon name="list" /></button>
         </div>
         <button className="button button-sm" onClick={exportCsv} title="Export CSV"><Icon name="download" /><span className="btn-label">CSV</span></button>
-        <button className="button button-primary button-sm" onClick={act.add}><Icon name="plus" />Add table</button>
+        {act.canEdit && <button className="button button-primary button-sm" onClick={act.add}><Icon name="plus" />Add table</button>}
       </PageHeading>
       <SearchBox className="page-search" placeholder="Search tables…" value={search} onChange={setSearch} />
       {!filtered.length ? <EmptyState title="No tables match these filters" description="Try another status or category." />

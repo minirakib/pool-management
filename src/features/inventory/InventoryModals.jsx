@@ -1,11 +1,11 @@
 import { useState } from "react";
-import * as actions from "../../app/actions.js";
-import { useStore, useStoreApi } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import Modal, { CloseFooter, FormFooter, useFormAttempt } from "../../components/Modal.jsx";
-import { productIcon } from "../../lib/constants.js";
-import { money } from "../../lib/format.js";
+import * as actions from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import Modal, { CloseFooter, FormFooter, useFormAttempt } from "@/components/Modal.jsx";
+import { productIcon } from "@/lib/constants.js";
+import { money } from "@/lib/format.js";
 
 const NEW = "__new__";
 export const marginOf = (cost, price) => (price > 0 ? Math.round(((price - cost) / price) * 100) : 0);

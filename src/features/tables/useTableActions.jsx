@@ -1,17 +1,19 @@
 import { useMemo } from "react";
-import { findTable, releaseMaintenance, setSessionStatus, tableSession } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import { AddProductModal, EndSessionModal, SessionDetailsModal, StartSessionModal, SwitchSessionModal, TableDetailsModal, TableFormModal } from "./TableModals.jsx";
+import { findTable, releaseMaintenance, setSessionStatus, tableSession } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import { AddProductModal, EndSessionModal, SessionDetailsModal, StartSessionModal, SwitchSessionModal, TableDetailsModal, TableFormModal } from "./modals";
 
 /** Every table/session action, shared by Dashboard, Tables, POS and the table modals. */
 export function useTableActions() {
   const state = useStore();
-  const { openModal, closeModal, notify, perform } = useUi();
+  const { openModal, closeModal, notify, perform, isAdmin } = useUi();
 
   return useMemo(() => {
     const session = (id) => tableSession(state, findTable(state, id));
+    const adminOnly = () => { closeModal(); notify("Only an Admin can add or edit tables.", "warning", "No access"); };
     return {
+      canEdit: isAdmin,
       start(id) {
         const table = findTable(state, id);
         if (!table || table.status !== "available" || session(id)) return notify("This table is not available to start a new session.", "warning");
@@ -24,8 +26,9 @@ export function useTableActions() {
       },
       details: (id) => openModal(<TableDetailsModal tableId={id} />),
       sessionDetails: (id) => openModal(session(id) ? <SessionDetailsModal tableId={id} /> : <TableDetailsModal tableId={id} />),
-      add: () => openModal(<TableFormModal />),
+      add: () => (isAdmin ? openModal(<TableFormModal />) : adminOnly()),
       edit(id) {
+        if (!isAdmin) return adminOnly();
         const table = findTable(state, id);
         if (table && table.status !== "available") { closeModal(); return notify("End or pause the current session before editing table availability.", "warning"); }
         openModal(<TableFormModal tableId={id} />);
@@ -47,5 +50,5 @@ export function useTableActions() {
         openModal(<AddProductModal tableId={id} />);
       }
     };
-  }, [state, openModal, closeModal, notify, perform]);
+  }, [state, openModal, closeModal, notify, perform, isAdmin]);
 }

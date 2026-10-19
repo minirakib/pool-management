@@ -1,12 +1,12 @@
 import { useState } from "react";
-import * as actions from "../../app/actions.js";
-import { deleteRecord, toggleStaffStatus } from "../../app/actions.js";
-import { useStore, useStoreApi } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import Modal, { ConfirmModal, FormFooter, useFormAttempt } from "../../components/Modal.jsx";
-import { Avatar, EmptyState, Field, PageHeading, SearchBox, SelectField, StatusPill } from "../../components/ui.jsx";
-import { money, shortDate, todayISO } from "../../lib/format.js";
+import * as actions from "@/app/actions";
+import { deleteRecord, toggleStaffStatus } from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import Modal, { ConfirmModal, FormFooter, useFormAttempt } from "@/components/Modal.jsx";
+import { Avatar, EmptyState, Field, PageHeading, SearchBox, SelectField, StatusPill } from "@/components/ui";
+import { money, shortDate, todayISO } from "@/lib/format.js";
 
 function StaffFormModal({ staffId = "" }) {
   const state = useStore();

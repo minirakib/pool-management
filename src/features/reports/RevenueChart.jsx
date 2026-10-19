@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useStore } from "../../app/store.jsx";
-import { money, toISODate, withAlpha } from "../../lib/format.js";
+import { useStore } from "@/app/store.jsx";
+import { money, toISODate, withAlpha } from "@/lib/format.js";
 
 /** Daily revenue rows for a preset period ("Today" | "7 Days" | "30 Days") or a custom from/to range. */
 export function chartRows(transactions, period, from = "", to = "") {

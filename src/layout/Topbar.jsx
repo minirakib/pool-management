@@ -1,25 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { useStore } from "../app/store.jsx";
-import { pageNames, useUi } from "../app/ui.jsx";
-import Icon from "../components/Icon.jsx";
-import Modal, { CloseFooter } from "../components/Modal.jsx";
-import { Avatar, EmptyState, StatusPill } from "../components/ui.jsx";
-import BookingFormModal from "../features/bookings/BookingFormModal.jsx";
-import { CustomerFormModal } from "../features/customers/CustomerModals.jsx";
-import ExpenseFormModal from "../features/expenses/ExpenseFormModal.jsx";
-import { useTableActions } from "../features/tables/useTableActions.jsx";
-import { billableMilliseconds, customerName } from "../lib/domain.js";
-import { dateLabel, durationLabel, todayISO } from "../lib/format.js";
+import { useStore } from "@/app/store.jsx";
+import { pageNames, routeOf } from "@/app/routes.js";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import Modal, { CloseFooter } from "@/components/Modal.jsx";
+import { Avatar, EmptyState, StatusPill } from "@/components/ui";
+import BookingFormModal from "@/features/bookings/BookingFormModal.jsx";
+import { CustomerFormModal } from "@/features/customers/CustomerModals.jsx";
+import ExpenseFormModal from "@/features/expenses/ExpenseFormModal.jsx";
+import { useTableActions } from "@/features/tables/useTableActions.jsx";
+import { ROLES } from "@/lib/auth.js";
+import { billableMilliseconds, customerName } from "@/lib/domain.js";
+import { dateLabel, durationLabel, todayISO } from "@/lib/format.js";
 
-// Pages whose search box mirrors the topbar search.
-const SEARCHABLE = ["tables", "customers", "bookings", "inventory", "expenses", "pos", "staff", "salary"];
 
 export default function Topbar() {
   const state = useStore();
-  const { page, setPage, openModal, search, setSearch } = useUi();
+  const { page, setPage, openModal, search, setSearch, user, can, signOut } = useUi();
   const tableActions = useTableActions();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const searchable = !!routeOf(page)?.search; // routes.js: pages whose own search box mirrors this one
   const live = state.sessions.filter((s) => !s.pausedAt).length;
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function Topbar() {
         <span className="top-date">{dateLabel()}</span>
         <label className="search-box top-search">
           <span className="search-icon"><Icon name="search" /></span>
-          <input aria-label="Search current page" placeholder="Search this page…" value={SEARCHABLE.includes(page) ? search : ""} onChange={(e) => SEARCHABLE.includes(page) && setSearch(e.target.value)} />
+          <input aria-label="Search current page" placeholder="Search this page…" value={searchable ? search : ""} onChange={(e) => searchable && setSearch(e.target.value)} />
         </label>
         <button className="icon-button" onClick={() => openModal(<NotificationsModal />)} aria-label="Notifications"><Icon name="bell" /><i className="dot"></i></button>
         <div className="menu-anchor" ref={menuRef}>
@@ -51,28 +52,29 @@ export default function Topbar() {
           </button>
           <div className="menu-popover" hidden={!menuOpen}>
             <button onClick={quick(tableActions.quickStart)}><Icon name="play" /> Start a table</button>
-            <button onClick={quick(() => openModal(<CustomerFormModal />))}><Icon name="user" /> Add customer</button>
+            {can("customers") && <button onClick={quick(() => openModal(<CustomerFormModal />))}><Icon name="user" /> Add customer</button>}
             <button onClick={quick(() => openModal(<BookingFormModal />))}><Icon name="calendar" /> Create booking</button>
-            <button onClick={quick(() => openModal(<ExpenseFormModal />))}><Icon name="wallet" /> Add expense</button>
+            {can("expenses") && <button onClick={quick(() => openModal(<ExpenseFormModal />))}><Icon name="wallet" /> Add expense</button>}
             <button onClick={quick(() => setPage("pos"))}><Icon name="receipt" /> New sale</button>
+            <button onClick={quick(() => setPage("arcade"))}><Icon name="coin" /> Sell arcade coins</button>
           </div>
         </div>
-        <button className="user-button" onClick={() => openModal(<ProfileModal />)} aria-label="Staff profile">
-          <Avatar name="Mahmud Hasan" /><span className="user-name">Admin</span><Icon name="chevron-down" className="chevron" />
+        <button className="user-button" onClick={() => openModal(<ProfileModal user={user} signOut={signOut} />)} aria-label="Signed-in user">
+          <Avatar name={user.name} /><span className="user-name">{ROLES[user.role]}</span><Icon name="chevron-down" className="chevron" />
         </button>
       </div>
     </header>
   );
 }
 
-function ProfileModal() {
+function ProfileModal({ user, signOut }) {
   return (
-    <Modal title="Staff profile" subtitle="Current local demo operator." footer={<CloseFooter />}>
+    <Modal title="Signed in" subtitle="Current operator on this device." footer={<CloseFooter><button className="button button-danger" onClick={signOut}><Icon name="undo" />Sign out</button></CloseFooter>}>
       <div className="profile-hero">
-        <Avatar name="Mahmud Hasan" />
-        <div><strong>Mahmud Hasan</strong><span style={{ display: "block", color: "var(--color-text-muted)", fontSize: 12 }}>Admin · Owner label · Local demo</span></div>
+        <Avatar name={user.name} />
+        <div><strong>{user.name}</strong><span style={{ display: "block", color: "var(--color-text-muted)", fontSize: 12 }}>@{user.username} · {ROLES[user.role]}</span></div>
       </div>
-      <p className="muted" style={{ fontSize: 13, margin: "12px 0 0" }}>This frontend demo does not authenticate users. Staff labels are informational only.</p>
+      <p className="muted" style={{ fontSize: 13, margin: "12px 0 0" }}>{user.role === "admin" ? "Admin: full access to every page." : "User: Tables, Bookings, POS and Arcade."}</p>
     </Modal>
   );
 }

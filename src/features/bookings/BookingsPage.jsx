@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { cycleBookingStatus, deleteRecord } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import { ConfirmModal } from "../../components/Modal.jsx";
-import { EmptyState, PageHeading, SearchBox, Select, StatusPill } from "../../components/ui.jsx";
-import { shortDate, todayISO } from "../../lib/format.js";
+import { cycleBookingStatus, deleteRecord } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { ConfirmModal } from "@/components/Modal.jsx";
+import { EmptyState, PageHeading, SearchBox, Select, StatusPill } from "@/components/ui";
+import { shortDate, todayISO } from "@/lib/format.js";
 import BookingFormModal from "./BookingFormModal.jsx";
 
 const STATUSES = ["All statuses", "Pending", "Confirmed", "Completed", "Cancelled"];

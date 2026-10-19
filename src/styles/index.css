@@ -1,0 +1,16 @@
+/*
+ * Global styles, in cascade order. Page-only styles live next to their page
+ * (features/<page>/<page>.css) and load with that page.
+ */
+@import "./variables.css";   /* design tokens: colours, fonts, sizes (dark + light) */
+@import "./base.css";        /* reset, typography, focus, scrollbars */
+@import "./layout.css";      /* sidebar, topbar, page shell */
+@import "./components.css";  /* buttons, panels, pills, tables, toasts, menus, badges */
+@import "./forms.css";       /* inputs, selects, date pickers */
+@import "./tables.css";      /* snooker table artwork and table cards */
+@import "./pages.css";       /* shared page blocks (POS bills, settings rows, charts) */
+@import "./responsive.css";  /* breakpoints for the above */
+@import "./features.css";    /* newer page sections (details, reports, salary, earning sheet) */
+@import "./modals.css";      /* large popups (start game, table form) */
+@import "./print.css";       /* receipt printing */
+@import "./app-shell.css";   /* loading + crash overlays */

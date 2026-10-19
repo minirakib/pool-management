@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Arcade page (imported by ArcadePage.jsx): coin sales, coin stock and reports
+   ========================================================================== */
+
+.arcade-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.arcade-layout > * { min-width: 0; }
+
+.arcade-price-form { display: flex; align-items: center; gap: 6px; }
+.arcade-price-form label { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 4px 0 10px; border: 1px solid var(--color-border-strong); border-radius: 9px; background: var(--bg-input); }
+.arcade-price-form label span { color: var(--color-text-faint); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.arcade-price-form input { width: 64px; height: 100%; border: 0; background: transparent; color: var(--color-text); font-family: var(--font-display); font-weight: 700; outline: none; }
+
+/* ---------- Sell ---------- */
+.arcade-sell { display: grid; gap: 14px; }
+.arcade-sell .panel-heading { margin-bottom: 0; }
+.arcade-qty { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; gap: 10px; }
+.arcade-qty > button { display: grid; place-items: center; height: 72px; border: 1px solid var(--color-border-strong); border-radius: 14px; background: var(--bg-raised); color: var(--color-text-muted); cursor: pointer; transition: border-color .14s, color .14s; }
+.arcade-qty > button:hover { border-color: var(--color-primary); color: var(--color-primary-ink); }
+.arcade-qty > button .ico { width: 20px; height: 20px; }
+.arcade-qty label { display: flex; align-items: baseline; justify-content: center; gap: 8px; height: 72px; padding: 0 14px; border: 1px solid var(--color-primary-line); border-radius: 14px; background: var(--bg-input); box-shadow: inset 0 0 20px color-mix(in srgb, var(--color-primary) 8%, transparent); }
+.arcade-qty input { width: 100%; min-width: 0; height: 100%; border: 0; background: transparent; color: var(--color-text); font-family: var(--font-display); font-size: 34px; font-weight: 800; text-align: center; outline: none; -moz-appearance: textfield; }
+.arcade-qty input::-webkit-outer-spin-button, .arcade-qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.arcade-qty label span { color: var(--color-text-faint); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.arcade-quick, .arcade-methods { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.arcade-methods { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.arcade-quick button, .arcade-methods button { height: 38px; border: 1px solid var(--color-border-strong); border-radius: 10px; background: var(--bg-raised); color: var(--color-text-muted); font-family: var(--font-display); font-size: 13px; font-weight: 700; cursor: pointer; transition: background .14s, color .14s, border-color .14s; }
+.arcade-methods button { font-family: var(--font-ui); font-size: 12px; }
+.arcade-quick button:disabled { opacity: .4; cursor: not-allowed; }
+.arcade-quick button.active, .arcade-methods button.active { border-color: var(--color-primary); background: var(--color-primary-soft); color: var(--color-primary-ink); }
+
+.arcade-calc { display: grid; gap: 8px; padding: 14px 16px; border: 1px dashed var(--color-border-strong); border-radius: 12px; background: var(--bg-raised); }
+.arcade-calc-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; color: var(--color-text-muted); font-size: 15px; font-weight: 600; }
+.arcade-calc-line strong { color: var(--color-gold); font-family: var(--font-display); font-size: 28px; text-shadow: 0 0 18px color-mix(in srgb, var(--color-gold) 30%, transparent); }
+.arcade-calc-stock { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; color: var(--color-text-faint); font-size: 12px; }
+.arcade-calc-stock span { margin-right: 4px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.arcade-calc-stock b { color: var(--color-text); font-family: var(--font-display); font-size: 14px; }
+.arcade-calc-stock .ico { width: 14px; height: 14px; }
+.arcade-calc-stock em { margin-left: auto; color: var(--color-danger); font-style: normal; font-weight: 700; }
+.arcade-calc.over { border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
+.arcade-sell-button { height: 54px; justify-content: center; border-radius: 12px; font-family: var(--font-display); font-size: 15px; letter-spacing: .05em; }
+
+/* ---------- Stock ---------- */
+.arcade-stock-big { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding: 16px; border: 1px solid var(--color-primary-line); border-radius: 14px; background: radial-gradient(220px 100px at 0 0, var(--color-primary-soft), transparent 70%), var(--bg-raised); }
+.arcade-stock-big strong { display: block; font-family: var(--font-display); font-size: 40px; font-weight: 900; line-height: 1; }
+.arcade-stock-big span { color: var(--color-text-muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.arcade-stock-big.low { border-color: color-mix(in srgb, var(--color-warning) 55%, transparent); }
+.arcade-stock-big.low strong, .arcade-stock-big.low > div > span { color: var(--color-warning); }
+.arcade-coin-mark { display: grid; place-items: center; flex: 0 0 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--color-gold) 70%, #fff), var(--color-gold) 55%, color-mix(in srgb, var(--color-gold) 60%, #000)); color: #3a2800; box-shadow: 0 0 22px color-mix(in srgb, var(--color-gold) 35%, transparent), inset 0 -3px 0 rgba(0, 0, 0, .2); }
+.arcade-coin-mark .ico { width: 28px; height: 28px; }
+.arcade-stock-form { display: grid; gap: 10px; margin-bottom: 16px; }
+.arcade-stock-form .segmented { justify-self: start; }
+.arcade-stock-input { display: flex; gap: 8px; }
+.arcade-stock-input input { flex: 1; min-width: 0; }
+.arcade-preview { margin: 0; font-size: 12px; }
+.arcade-log { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.arcade-log li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: 10px; }
+.arcade-log li > div { flex: 1; min-width: 0; }
+.arcade-log strong { display: block; font-size: 13px; }
+.arcade-log span:not(.arcade-log-mark) { color: var(--color-text-faint); font-size: 11.5px; }
+.arcade-log b { color: var(--color-text-muted); font-family: var(--font-display); font-size: 12px; white-space: nowrap; }
+.arcade-log-mark { display: grid; place-items: center; flex: 0 0 auto; min-width: 38px; height: 26px; padding: 0 6px; border-radius: 8px; background: var(--color-primary-soft); color: var(--color-primary-ink); font-family: var(--font-display); font-size: 11px; font-weight: 800; }
+.arcade-log-mark.set { background: color-mix(in srgb, var(--color-info) 16%, transparent); color: var(--color-info); }
+
+.arcade-days tbody tr { cursor: pointer; }
+.arcade-days tr.is-selected td { background: var(--color-primary-soft); }
+
+@media (max-width: 1080px) {
+  .arcade-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .arcade-price-form label span { display: none; }
+  .arcade-methods { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .arcade-qty { grid-template-columns: 48px minmax(0, 1fr) 48px; }
+}

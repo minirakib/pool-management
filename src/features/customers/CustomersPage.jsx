@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { deleteConfigs, deleteRecord } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import { ConfirmModal } from "../../components/Modal.jsx";
-import { EmptyState, PageHeading, SearchBox, Select } from "../../components/ui.jsx";
-import { csvDownload } from "../../lib/download.js";
-import { money, shortDate } from "../../lib/format.js";
+import { deleteConfigs, deleteRecord } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { ConfirmModal } from "@/components/Modal.jsx";
+import { EmptyState, PageHeading, SearchBox, Select } from "@/components/ui";
+import { csvDownload } from "@/lib/download.js";
+import { money, shortDate } from "@/lib/format.js";
 import { CustomerFormModal, CustomerProfileModal } from "./CustomerModals.jsx";
 
 export default function CustomersPage() {

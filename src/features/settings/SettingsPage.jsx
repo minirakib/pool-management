@@ -1,13 +1,15 @@
-import { saveSettings, setDefaultCloth, toggleTheme } from "../../app/actions.js";
-import { useStore, useStoreApi } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import { ConfirmModal } from "../../components/Modal.jsx";
-import { ClothPicker } from "../../components/SnookerTable.jsx";
-import { Field, PageHeading, Select, SelectField } from "../../components/ui.jsx";
-import { categories } from "../../lib/constants.js";
-import { jsonDownload } from "../../lib/download.js";
-import { money, todayISO } from "../../lib/format.js";
-import { accentNames, accentOptions, currentAccent } from "../../lib/theme.js";
+import { saveArcadeSettings, saveSettings, setDefaultCloth, toggleTheme } from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import { ConfirmModal } from "@/components/Modal.jsx";
+import { ClothPicker } from "@/components/snooker/SnookerTable.jsx";
+import { Field, PageHeading, Select, SelectField } from "@/components/ui";
+import { categories } from "@/lib/constants.js";
+import { jsonDownload } from "@/lib/download.js";
+import { rateFor } from "@/lib/domain.js";
+import { money, todayISO } from "@/lib/format.js";
+import UsersPanel from "./UsersPanel.jsx";
+import { accentNames, accentOptions, currentAccent } from "@/lib/theme.js";
 
 export default function SettingsPage() {
   const state = useStore();
@@ -42,8 +44,10 @@ export default function SettingsPage() {
             <Field label="Club name" name="clubName" value={settings.clubName} required />
             <Field label="Phone number" name="phone" type="tel" value={settings.phone} />
             <Field label="Address" name="address" value={settings.address} />
-            <Field label="Default hourly rate" name="defaultRate" type="number" value={settings.defaultRate} min="0" step="1" required />
-            <SelectField label="Default billing mode" name="billingMode" options={["minute", "hour"]} value={settings.billingMode} />
+            <Field label="Default AC hourly rate" name="defaultRate" type="number" value={settings.defaultRate} min="0" step="1" required />
+            <Field label="Default Non-AC hourly rate" name="defaultNonAcRate" type="number" value={settings.defaultNonAcRate ?? 200} min="0" step="1" required />
+            <label className="field"><span>Default billing mode</span><Select name="billingMode" defaultValue={settings.billingMode} options={[["minute", "Per minute"], ["hour", "Per started hour"], ["game", "Single game + extra minutes"]]} /></label>
+            <Field label="Single game length (minutes)" name="singleGameMinutes" type="number" value={settings.singleGameMinutes ?? 15} min="1" step="1" required />
             <Field label="Minimum charge" name="minimumCharge" type="number" value={settings.minimumCharge} min="0" step="1" />
             <SelectField label="Appearance" name="theme" options={["dark", "light"]} value={settings.theme} />
             <label className="field"><span>Accent color</span><Select name="accent" defaultValue={accent} options={accentOptions.map((v) => [v, accentNames[v]])} /></label>
@@ -55,6 +59,7 @@ export default function SettingsPage() {
           </form>
         </article>
         <div>
+          <UsersPanel />
           <article className="panel settings-section">
             <h2>Table board color</h2>
             <p className="muted" style={{ fontSize: 13 }}>Default cloth color for new tables. Each table can also have its own color in Tables → Edit.</p>
@@ -74,10 +79,22 @@ export default function SettingsPage() {
               return (
                 <div key={category} className="settings-row">
                   <div><strong>{category}</strong><span>{tables.length} configured tables</span></div>
-                  <strong>{money(tables.reduce((s, t) => s + t.rate, 0) / Math.max(1, tables.length))}/hr avg</strong>
+                  <strong>AC {money(tables.reduce((s, t) => s + rateFor(t, "ac"), 0) / Math.max(1, tables.length))} · Non-AC {money(tables.reduce((s, t) => s + rateFor(t, "nonac"), 0) / Math.max(1, tables.length))}/hr avg</strong>
                 </div>
               );
             })}
+          </article>
+          <article className="panel settings-section">
+            <h2>Arcade coins</h2>
+            <p className="muted" style={{ fontSize: 13 }}>Price per arcade coin and the total coins available to sell. Changing the total is logged in Arcade → Stock history.</p>
+            <form key={`${settings.arcadeCoinPrice}-${state.arcade.stock}`} className="form-grid" onSubmit={(e) => { e.preventDefault(); perform(saveArcadeSettings, Object.fromEntries(new FormData(e.currentTarget).entries())); }}>
+              <Field label="Coin price (BDT)" name="arcadeCoinPrice" type="number" value={settings.arcadeCoinPrice ?? 15} min="0" step="1" required />
+              <Field label="Total coins in stock" name="arcadeStock" type="number" value={state.arcade.stock} min="0" step="1" required />
+              <div className="field field-wide" style={{ display: "flex", flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+                <button className="button button-primary" type="submit">Save arcade settings</button>
+                <button className="button" type="button" onClick={() => setPage("arcade")}>Open arcade</button>
+              </div>
+            </form>
           </article>
           <article className="panel settings-section">
             <h2>Theme</h2>

@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
@@ -31,6 +32,8 @@ export default defineConfig({
       }
     })
   ],
+  // "@/..." = src/... (UI code). Pure logic (src/lib, src/app/actions, seed) keeps relative imports so node --test runs it directly.
+  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
   base: "/",
   build: { target: "es2020", cssMinify: true }
 });

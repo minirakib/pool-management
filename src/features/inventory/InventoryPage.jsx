@@ -1,15 +1,16 @@
 import { useState } from "react";
-import * as actions from "../../app/actions.js";
-import { deleteConfigs, deleteRecord } from "../../app/actions.js";
-import { useStore } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import { ConfirmModal } from "../../components/Modal.jsx";
-import { EmptyState, PageHeading, SearchBox, StatusPill } from "../../components/ui.jsx";
-import { productIcon } from "../../lib/constants.js";
-import { csvDownload } from "../../lib/download.js";
-import { money } from "../../lib/format.js";
+import * as actions from "@/app/actions";
+import { deleteConfigs, deleteRecord } from "@/app/actions";
+import { useStore } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import { ConfirmModal } from "@/components/Modal.jsx";
+import { EmptyState, PageHeading, SearchBox, StatusPill } from "@/components/ui";
+import { productIcon } from "@/lib/constants.js";
+import { csvDownload } from "@/lib/download.js";
+import { money } from "@/lib/format.js";
 import { CategoryManagerModal, marginOf, ProductFormModal, StockAdjustModal } from "./InventoryModals.jsx";
+import "./inventory.css";
 
 const stockState = (p) => (p.stock === 0 ? "out" : p.stock <= p.threshold ? "low" : "ok");
 const STOCK_LABEL = { out: "Out of stock", low: "Low stock", ok: "In stock" };

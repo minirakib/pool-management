@@ -1,14 +1,14 @@
 import { useState } from "react";
-import * as actions from "../../app/actions.js";
-import { deleteRecord, unpaySalary } from "../../app/actions.js";
-import { useStore, useStoreApi } from "../../app/store.jsx";
-import { useUi } from "../../app/ui.jsx";
-import Icon from "../../components/Icon.jsx";
-import Modal, { CloseFooter, ConfirmModal, FormFooter, useFormAttempt } from "../../components/Modal.jsx";
-import { Avatar, Field, SelectField, StatusPill, TextareaField } from "../../components/ui.jsx";
-import { salaryMethods } from "../../lib/constants.js";
-import { salaryNet } from "../../lib/domain.js";
-import { money, monthISO, monthLabel, shortDate, todayISO } from "../../lib/format.js";
+import * as actions from "@/app/actions";
+import { deleteRecord, unpaySalary } from "@/app/actions";
+import { useStore, useStoreApi } from "@/app/store.jsx";
+import { useUi } from "@/app/ui.jsx";
+import Icon from "@/components/Icon.jsx";
+import Modal, { CloseFooter, ConfirmModal, FormFooter, useFormAttempt } from "@/components/Modal.jsx";
+import { Avatar, Field, SelectField, StatusPill, TextareaField } from "@/components/ui";
+import { salaryMethods } from "@/lib/constants.js";
+import { salaryNet } from "@/lib/domain.js";
+import { money, monthISO, monthLabel, shortDate, todayISO } from "@/lib/format.js";
 
 const AMOUNT_FIELDS = [
   ["base", "Base salary", "earning"], ["bonus", "Bonus", "earning"], ["overtime", "Overtime", "earning"],
