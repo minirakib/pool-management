@@ -49,6 +49,11 @@ function UserFormModal({ userId = "" }) {
   );
 }
 
+export function AddUserButton() {
+  const { openModal } = useUi();
+  return <button className="button button-sm button-primary" onClick={() => openModal(<UserFormModal />)}><Icon name="plus" />Add user</button>;
+}
+
 /** Settings → Users: the Admin / User sign-in accounts. */
 export default function UsersPanel() {
   const state = useStore();
@@ -59,20 +64,20 @@ export default function UsersPanel() {
   );
 
   return (
-    <article className="panel settings-section">
-      <div className="panel-heading">
-        <div><h2>Users</h2><p>Admin: full access · User: Tables, Bookings, POS, Arcade</p></div>
-        <button className="button button-sm button-primary" onClick={() => openModal(<UserFormModal />)}><Icon name="plus" />Add user</button>
-      </div>
+    <div className="settings-list">
       {state.users.map((u) => (
         <div key={u.id} className="settings-row user-row">
           <Avatar name={u.name} />
-          <div><strong>{u.name}{u.id === me.id && <em className="muted"> · you</em>}</strong><span>@{u.username}{[u.email, u.phone].filter(Boolean).map((c) => ` · ${c}`).join("") || " · no email or phone for password reset"}</span></div>
+          <div>
+            <strong>{u.name}{u.id === me.id && <em className="muted"> · you</em>}</strong>
+            <span>@{u.username}{[u.email, u.phone].filter(Boolean).map((c) => ` · ${c}`).join("")}</span>
+            {!u.email && !u.phone && <span className="text-warning">No email or phone · cannot use Forgot password</span>}
+          </div>
           <span className={`role-badge${u.role === "admin" ? "" : " user"}`}>{ROLES[u.role]}</span>
           <button className="icon-button" onClick={() => openModal(<UserFormModal userId={u.id} />)} aria-label={`Edit ${u.name}`}><Icon name="edit" /></button>
-          {u.id !== me.id && <button className="icon-button" onClick={() => remove(u)} aria-label={`Remove ${u.name}`}><Icon name="trash" /></button>}
+          {u.id !== me.id ? <button className="icon-button" onClick={() => remove(u)} aria-label={`Remove ${u.name}`}><Icon name="trash" /></button> : <span className="icon-button-spacer" aria-hidden="true"></span>}
         </div>
       ))}
-    </article>
+    </div>
   );
 }

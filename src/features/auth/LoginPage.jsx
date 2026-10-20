@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/app/store.jsx";
 import { useUi } from "@/app/ui.jsx";
+import { BrandMark, BrandName } from "@/components/Brand.jsx";
 import Icon from "@/components/Icon.jsx";
 import SnookerTable from "@/components/snooker/SnookerTable.jsx";
 import ForgotPasswordPage from "./ForgotPasswordPage.jsx";
@@ -37,8 +38,8 @@ export default function LoginPage() {
       ) : (
       <form className="login-card" onSubmit={submit}>
         <div className="login-brand">
-          <div className="brand-mark"><span>C</span></div>
-          <div><div className="brand-name">CUE<b>CORE</b></div><span>{settings.clubName}</span></div>
+          <BrandMark settings={settings} />
+          <div><BrandName settings={settings} /><span>{settings.clubName}</span></div>
         </div>
         <h1>Sign in</h1>
         <p className="muted">Use your staff account to open the club system.</p>

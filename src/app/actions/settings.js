@@ -1,12 +1,30 @@
 /** Club settings, theme and board colours. */
+import { fail } from "./helpers.js";
+
+const trim = (v) => String(v).trim();
+const amount = (v) => Math.max(0, Number(v) || 0);
+// Each settings tab sends only its own fields; anything not sent keeps its saved value.
+const SETTING_FIELDS = {
+  clubName: trim, phone: trim, address: trim,
+  defaultRate: amount, defaultNonAcRate: amount, minimumCharge: amount,
+  billingMode: (v) => (["minute", "hour", "game"].includes(v) ? v : "minute"),
+  singleGameMinutes: (v) => Math.max(1, Math.round(Number(v)) || 15),
+  theme: (v) => (v === "light" ? "light" : "dark"), accent: trim,
+  brandName: (v) => trim(v).slice(0, 32), brandTagline: (v) => trim(v).slice(0, 40),
+  brandHighlight: (v) => (v === "none" ? "none" : "last"),
+  logoOnReceipt: (v) => v === true || v === "true"
+};
 
 export function saveSettings(s, values) {
-  Object.assign(s.settings, {
-    clubName: values.clubName.trim(), phone: values.phone.trim(), address: values.address.trim(),
-    defaultRate: Number(values.defaultRate), defaultNonAcRate: Number(values.defaultNonAcRate), billingMode: values.billingMode, singleGameMinutes: Math.max(1, Number(values.singleGameMinutes) || 15), minimumCharge: Number(values.minimumCharge) || 0,
-    theme: values.theme, accent: values.accent
-  });
-  return "Club settings saved on this device.";
+  if (values.clubName !== undefined && !trim(values.clubName)) fail("Enter the club name.");
+  for (const [key, parse] of Object.entries(SETTING_FIELDS)) if (values[key] !== undefined) s.settings[key] = parse(values[key]);
+  return "Settings saved on this device.";
+}
+
+/** logo: a data URL from lib/image.js fileToLogo, or "" to go back to the default mark. */
+export function setLogo(s, logo) {
+  s.settings.logo = logo || "";
+  return logo ? "Logo updated." : "Logo removed.";
 }
 
 /** Sets the board colour for new tables; with applyToAll, recolours every existing table too. */

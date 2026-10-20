@@ -3,6 +3,7 @@ import { flushSync } from "react-dom";
 import Receipt from "@/components/Receipt.jsx";
 import { canAccess, HOME, pageFromPath, pageNames, pathFor } from "@/app/routes.js";
 import { hashPassword } from "@/lib/auth.js";
+import { brandText } from "@/lib/brand.js";
 import { useStore, useStoreApi } from "@/app/store.jsx";
 
 const UiContext = createContext(null);
@@ -70,7 +71,14 @@ export function UiProvider({ children }) {
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
-  useEffect(() => { document.title = `${pageNames[page]} · CUECORE`; }, [page]);
+  useEffect(() => { document.title = `${pageNames[page]} · ${brandText(settings)}`; }, [page, settings]);
+  // The browser tab icon follows the uploaded club logo.
+  useEffect(() => {
+    const icon = document.querySelector("link[rel='icon']");
+    if (!icon) return;
+    icon.href = settings.logo || "/icon.svg";
+    icon.type = settings.logo ? settings.logo.slice(5, settings.logo.indexOf(";")) : "image/svg+xml";
+  }, [settings.logo]);
 
   // A User who lands on an Admin page (link, back button, sign-in) is moved to the home page.
   useEffect(() => {

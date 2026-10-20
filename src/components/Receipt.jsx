@@ -1,5 +1,8 @@
 import { durationLabel, money, monthLabel, shortDate, timeLabel } from "@/lib/format.js";
 
+/** The club logo on top of printed receipts, unless turned off in Settings → Club profile. */
+const ReceiptLogo = ({ settings }) => (settings.logo && settings.logoOnReceipt !== false ? <img className="receipt-logo" src={settings.logo} alt="" /> : null);
+
 const Row = ({ label, value, className = "" }) => (
   <div className={`receipt-row ${className}`}><span>{label}</span><span>{value}</span></div>
 );
@@ -8,6 +11,7 @@ const Row = ({ label, value, className = "" }) => (
 function Payslip({ details: d, settings }) {
   return (
     <>
+      <ReceiptLogo settings={settings} />
       <h1>{settings.clubName}</h1>
       <div className="receipt-center">{settings.address}<br />{settings.phone}<br /><strong>PAYSLIP · {monthLabel(d.month).toUpperCase()}</strong></div>
       <div className="receipt-rule"></div>
@@ -35,6 +39,7 @@ export default function Receipt({ details, settings }) {
   if (details.payslip) return <Payslip details={details} settings={settings} />;
   return (
     <>
+      <ReceiptLogo settings={settings} />
       <h1>{settings.clubName}</h1>
       <div className="receipt-center">{settings.address}<br />{settings.phone}<br /><strong>RECEIPT · DEMO</strong></div>
       <div className="receipt-rule"></div>

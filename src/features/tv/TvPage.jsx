@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { tableSession } from "@/app/actions";
 import { useStorageSync, useStore, useStoreApi } from "@/app/store.jsx";
 import { useUi } from "@/app/ui.jsx";
+import { BrandMark, BrandName } from "@/components/Brand.jsx";
 import Icon from "@/components/Icon.jsx";
 import { Timer } from "@/components/Live.jsx";
 import SnookerTable from "@/components/snooker/SnookerTable.jsx";
@@ -170,8 +171,8 @@ export default function TvPage() {
     <div className={`tv-screen${awake ? "" : " idle"}${fullscreen ? " fullscreen" : ""}`}>
       <header className="tv-bar">
         <div className="tv-brand">
-          <div className="brand-mark"><span>C</span></div>
-          <div><div className="brand-name">CUE<b>CORE</b></div><div className="tv-club">{state.settings.clubName}</div></div>
+          <BrandMark settings={state.settings} />
+          <div><BrandName settings={state.settings} /><div className="tv-club">{state.settings.clubName}</div></div>
         </div>
         <Clock />
         {/* In full screen this floats over the top-right corner, shown on mouse move or while hovering the corner. */}

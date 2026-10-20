@@ -23,6 +23,7 @@
     .boot b { color: #eafff4; font-size: 18px; letter-spacing: .18em; }
     html[data-theme="light"] .boot b { color: #0b1a12; }
     .boot noscript { max-width: 300px; color: #ff5c6c; letter-spacing: 0; text-transform: none; text-align: center; font-size: 13px; }
+    .boot-logo { width: 72px; height: 72px; object-fit: contain; animation: boot-pulse 1.2s ease-in-out infinite; }
     @keyframes boot-pulse { 50% { transform: scale(.88); opacity: .7; } }
   </style>
 </head>
@@ -35,6 +36,20 @@
       <noscript>CUECORE needs JavaScript. Please enable it in your browser settings and reload.</noscript>
     </div>
   </div>
+  <script>
+    // Show the club's own logo and brand name on the loading screen (set in Settings → Club profile).
+    try {
+      var brand = (JSON.parse(localStorage.getItem("cuecore.demo.v1") || "null") || {}).settings || {};
+      var boot = document.querySelector(".boot");
+      if (brand.brandName) boot.querySelector("b").textContent = brand.brandName;
+      if (brand.logo) {
+        var logo = document.createElement("img");
+        logo.src = brand.logo; logo.alt = ""; logo.className = "boot-logo";
+        boot.replaceChild(logo, boot.querySelector(".boot-ball"));
+        document.querySelector("link[rel='icon']").href = brand.logo;
+      }
+    } catch (e) { /* storage blocked or unreadable: keep the default */ }
+  </script>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

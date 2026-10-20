@@ -4,7 +4,9 @@ import { useStore, useStoreApi } from "@/app/store.jsx";
 import { navGroups } from "@/app/routes.js";
 import { useUi } from "@/app/ui.jsx";
 import Icon from "@/components/Icon.jsx";
+import { BrandMark, BrandName } from "@/components/Brand.jsx";
 import { Avatar } from "@/components/ui";
+import { brandTagline } from "@/lib/brand.js";
 import { ROLES } from "@/lib/auth.js";
 
 const COLLAPSE_KEY = "cuecore.sidebar-collapsed";
@@ -27,8 +29,8 @@ export default function Sidebar() {
   return (
     <aside id="sidebar" className="sidebar" aria-label="Main navigation">
       <div className="brand-row">
-        <div className="brand-mark"><span>C</span></div>
-        <div className="brand-copy"><div className="brand-name">CUE<b>CORE</b></div><div className="brand-caption">Club operations</div></div>
+        <BrandMark settings={state.settings} />
+        <div className="brand-copy"><BrandName settings={state.settings} />{brandTagline(state.settings) && <div className="brand-caption">{brandTagline(state.settings)}</div>}</div>
         <button className="icon-button nav-close" onClick={() => document.body.classList.remove("nav-open")} aria-label="Close navigation"><Icon name="x" /></button>
       </div>
       <div className="club-switcher">
