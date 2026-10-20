@@ -7,10 +7,12 @@
  *   access  "user": Admin and User may open it. "admin": Admin only.
  *   search  The topbar search box filters this page.
  *   load    Lazy import, so a page's code downloads on first visit (Tables ships in the main bundle).
+ *   bare    Fills the whole screen without the sidebar and topbar (the TV display).
  */
 export const ROUTES = [
   { id: "tables", title: "Tables", icon: "table", group: "Arena", access: "user", search: true },
   { id: "bookings", title: "Bookings", icon: "calendar", group: "Arena", access: "user", search: true, load: () => import("@/features/bookings/BookingsPage.jsx") },
+  { id: "tv", title: "TV Display", icon: "tv", group: "Arena", access: "user", bare: true, load: () => import("@/features/tv/TvPage.jsx") },
 
   { id: "pos", title: "POS Sales", icon: "cart", group: "Counter", menu: "pos", access: "user", search: true, load: () => import("@/features/pos/PosSalesPage.jsx") },
   { id: "pos-tables", title: "POS Table", icon: "table", group: "Counter", menu: "pos", access: "user", load: () => import("@/features/pos/PosTablesPage.jsx") },

@@ -1,6 +1,7 @@
 import { clothFor } from "@/lib/theme.js";
 import { useState } from "react";
 import { tableSession } from "@/app/actions";
+import { pathFor } from "@/app/routes.js";
 import { useStore } from "@/app/store.jsx";
 import { useUi } from "@/app/ui.jsx";
 import Icon from "@/components/Icon.jsx";
@@ -126,6 +127,7 @@ export default function TablesPage() {
           <button className={view === "grid" ? "active" : ""} onClick={() => setView("grid")} aria-label="Grid view" title="Grid view"><Icon name="grid" /></button>
           <button className={view === "list" ? "active" : ""} onClick={() => setView("list")} aria-label="List view" title="List view"><Icon name="list" /></button>
         </div>
+        <button className="button button-sm" onClick={() => window.open(pathFor("tv"), "cuecore-tv")} title="Open the TV display in a new window"><Icon name="tv" /><span className="btn-label">TV</span></button>
         <button className="button button-sm" onClick={exportCsv} title="Export CSV"><Icon name="download" /><span className="btn-label">CSV</span></button>
         {act.canEdit && <button className="button button-primary button-sm" onClick={act.add}><Icon name="plus" />Add table</button>}
       </PageHeading>

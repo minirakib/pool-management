@@ -36,6 +36,8 @@ function UserFormModal({ userId = "" }) {
       <div className="form-grid">
         <label className="field"><span>Full name</span><input name="name" defaultValue={user?.name || ""} required maxLength={40} autoFocus /></label>
         <label className="field"><span>Username</span><input name="username" defaultValue={user?.username || ""} required maxLength={24} autoCapitalize="none" spellCheck="false" autoComplete="off" /></label>
+        <label className="field"><span>Email</span><input name="email" type="email" defaultValue={user?.email || ""} maxLength={80} autoComplete="off" placeholder="For password reset" /></label>
+        <label className="field"><span>Phone</span><input name="phone" type="tel" defaultValue={user?.phone || ""} maxLength={20} autoComplete="off" placeholder="01XXXXXXXXX" /></label>
         <div className="field field-wide">
           <span>Access level</span>
           <ChoiceGroup name="role" label="Access level" value={role} onChange={setRole} options={[["admin", "Admin", "Every page"], ["user", "User", "Tables · Bookings · POS · Arcade"]]} />
@@ -65,7 +67,7 @@ export default function UsersPanel() {
       {state.users.map((u) => (
         <div key={u.id} className="settings-row user-row">
           <Avatar name={u.name} />
-          <div><strong>{u.name}{u.id === me.id && <em className="muted"> · you</em>}</strong><span>@{u.username}</span></div>
+          <div><strong>{u.name}{u.id === me.id && <em className="muted"> · you</em>}</strong><span>@{u.username}{[u.email, u.phone].filter(Boolean).map((c) => ` · ${c}`).join("") || " · no email or phone for password reset"}</span></div>
           <span className={`role-badge${u.role === "admin" ? "" : " user"}`}>{ROLES[u.role]}</span>
           <button className="icon-button" onClick={() => openModal(<UserFormModal userId={u.id} />)} aria-label={`Edit ${u.name}`}><Icon name="edit" /></button>
           {u.id !== me.id && <button className="icon-button" onClick={() => remove(u)} aria-label={`Remove ${u.name}`}><Icon name="trash" /></button>}

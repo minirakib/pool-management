@@ -29,3 +29,27 @@
 .login-roles > div { padding: 9px 11px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--bg-raised); }
 .login-roles strong { display: block; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
 .login-roles span { color: var(--color-text-faint); font-size: 11px; }
+
+/* ---------- Forgot password ---------- */
+.login-link { justify-self: start; padding: 2px 0; border: 0; background: none; color: var(--color-primary-ink); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.login-link:hover:not(:disabled) { text-decoration: underline; }
+.login-link:disabled { color: var(--color-text-faint); cursor: default; }
+.login-forgot { justify-self: end; margin-top: -6px; }
+.login-back { justify-self: start; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 2px; padding: 0; border: 0; background: none; color: var(--color-text-muted); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.login-back:hover { color: var(--color-text); }
+.login-back .ico { width: 15px; height: 15px; }
+.login-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.login-steps li { display: flex; align-items: center; gap: 7px; padding-top: 8px; border-top: 2px solid var(--color-border); color: var(--color-text-faint); font-size: 11.5px; font-weight: 600; }
+.login-steps li span { display: grid; place-items: center; flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%; background: var(--bg-raised); font-size: 11px; font-weight: 800; }
+.login-steps li span .ico { width: 12px; height: 12px; }
+.login-steps li.active { border-color: var(--color-primary); color: var(--color-text); }
+.login-steps li.active span { background: var(--color-primary); color: #04110b; }
+.login-steps li.done { border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border)); color: var(--color-text-muted); }
+.login-steps li.done span { background: color-mix(in srgb, var(--color-primary) 18%, transparent); color: var(--color-primary-ink); }
+.login-card > p strong { color: var(--color-text); }
+.login-code { font-family: var(--font-display); font-size: 22px; letter-spacing: .5em; text-align: center; }
+.login-demo, .login-success { display: flex; align-items: flex-start; gap: 8px; margin: 0; padding: 9px 12px; border-radius: 10px; font-size: 13px; }
+.login-demo { border: 1px solid color-mix(in srgb, var(--color-warning) 40%, transparent); background: color-mix(in srgb, var(--color-warning) 10%, transparent); color: var(--color-text); }
+.login-demo b { color: var(--color-warning); font-family: var(--font-display); letter-spacing: .15em; }
+.login-success { border: 1px solid color-mix(in srgb, var(--color-success) 40%, transparent); background: color-mix(in srgb, var(--color-success) 10%, transparent); color: var(--color-success); font-weight: 600; }
+.login-demo .ico, .login-success .ico { flex: 0 0 auto; width: 16px; height: 16px; margin-top: 1px; }

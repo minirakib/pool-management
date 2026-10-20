@@ -52,7 +52,18 @@ export function StoreProvider({ children }) {
     root.style.setProperty("--color-primary-hover", accent);
   }, [state?.settings.theme, state?.settings.accent]);
 
-  const api = useMemo(() => ({ run, reset }), [run, reset]);
+  /** Re-reads saved data after another tab changed it (the TV display follows the counter this way). */
+  const reload = useCallback(() => {
+    try {
+      const fresh = loadState();
+      latest.current = fresh;
+      setState(fresh);
+    } catch (error) {
+      console.error("CUECORE could not reload saved data.", error);
+    }
+  }, []);
+
+  const api = useMemo(() => ({ run, reset, reload }), [run, reset, reload]);
   if (boot.error) return <LoadError message={boot.error.message} />;
 
   return (

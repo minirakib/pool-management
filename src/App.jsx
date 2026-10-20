@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect } from "react";
-import { HOME, ROUTES } from "@/app/routes.js";
+import { HOME, ROUTES, routeOf } from "@/app/routes.js";
 import { useStorageSync } from "@/app/store.jsx";
 import { useUi } from "@/app/ui.jsx";
 import ErrorBoundary from "@/components/ErrorBoundary.jsx";
@@ -18,9 +18,12 @@ function PageLoading() {
 
 export default function App() {
   const { user, can, page, setPage, modal, closeModal, notify } = useUi();
-  const Page = pages[can(page) ? page : HOME];
+  const pageId = can(page) ? page : HOME;
+  const Page = pages[pageId];
+  const bare = !!routeOf(pageId).bare;
 
-  useStorageSync(useCallback(() => notify("Demo data changed in another browser tab. Reload to view the latest saved data.", "info", "Local data updated"), [notify]));
+  // Bare pages (the TV display) reload the new data themselves instead of asking.
+  useStorageSync(useCallback(() => { if (!bare) notify("Demo data changed in another browser tab. Reload to view the latest saved data.", "info", "Local data updated"); }, [notify, bare]));
 
   // Once the first page is up, fetch the other pages in the background: later clicks are
   // instant, and an open tab keeps working even after a new deploy removes the old files.
@@ -32,6 +35,12 @@ export default function App() {
   }, [user, can]);
 
   if (!user) return <LoginPage />;
+
+  if (bare) return (
+    <ErrorBoundary resetKey={page} onHome={() => setPage(HOME)}>
+      <Suspense fallback={<PageLoading />}><Page /></Suspense>
+    </ErrorBoundary>
+  );
 
   return (
     <>

@@ -1,13 +1,14 @@
+import { useState } from "react";
 import { useStore } from "@/app/store.jsx";
 import { useUi } from "@/app/ui.jsx";
 import Icon from "@/components/Icon.jsx";
 import { LiveAmount, Timer } from "@/components/Live.jsx";
-import { EmptyState, PageHeading, StatusPill } from "@/components/ui";
+import { EmptyState, PageHeading, Segmented, StatusPill } from "@/components/ui";
 import { useNow } from "@/hooks/useNow.js";
 import { customerName, sessionBreakdown } from "@/lib/domain.js";
 import { money, todayISO } from "@/lib/format.js";
 import { useTableActions } from "@/features/tables/useTableActions.jsx";
-import PosTransactions from "./PosTransactions.jsx";
+import PosTransactions, { transactionCount } from "./PosTransactions.jsx";
 
 /** Sum of every open table bill; ticks every second. */
 function LiveTotal({ sessions }) {
@@ -40,11 +41,12 @@ function LiveBillCard({ session, table }) {
   );
 }
 
-/** POS → Table: live table bills, ready to close and pay. */
+/** POS → Table, in two tabs: Live bills (open tables, ready to close and pay) and Transactions (closed table bills). */
 export default function PosTablesPage() {
   const state = useStore();
   const { setPage } = useUi();
   const act = useTableActions();
+  const [tab, setTab] = useState("live");
   const activeSessions = state.sessions.map((session) => ({ session, table: state.tables.find((t) => t.id === session.tableId) })).filter((e) => e.table);
   const today = todayISO();
   const billsToday = state.transactions.filter((t) => t.type === "session" && t.date.slice(0, 10) === today);
@@ -60,10 +62,16 @@ export default function PosTablesPage() {
         <button className="button button-sm" onClick={() => setPage("tables")}><Icon name="table" /><span className="btn-label">Tables</span></button>
         <button className="button button-sm button-primary" onClick={act.quickStart}><Icon name="play" /><span className="btn-label">Start game</span></button>
       </PageHeading>
-      {activeSessions.length
-        ? <div className="table-grid">{activeSessions.map(({ session, table }) => <LiveBillCard key={session.id} session={session} table={table} />)}</div>
-        : <article className="panel"><EmptyState title="No active table sessions" description="Start a game to track table time and products."><button className="button button-primary" onClick={act.quickStart}>Start a table</button></EmptyState></article>}
-      <div className="report-row"><PosTransactions defaultTab="tables" /></div>
+      <div className="toolbar pos-tabs">
+        <Segmented label="POS Table section" value={tab} onChange={setTab} options={[
+          { id: "live", label: "Live bills", icon: "table", count: activeSessions.length },
+          { id: "transactions", label: "Transactions", icon: "receipt", count: transactionCount(state, "tables") }
+        ]} />
+      </div>
+      {tab === "transactions" ? <PosTransactions kind="tables" />
+        : activeSessions.length
+          ? <div className="table-grid">{activeSessions.map(({ session, table }) => <LiveBillCard key={session.id} session={session} table={table} />)}</div>
+          : <article className="panel"><EmptyState title="No active table sessions" description="Start a game to track table time and products."><button className="button button-primary" onClick={act.quickStart}>Start a table</button></EmptyState></article>}
     </>
   );
 }

@@ -3,11 +3,11 @@ import { completeSale } from "@/app/actions";
 import { useStore, useStoreApi } from "@/app/store.jsx";
 import { useUi } from "@/app/ui.jsx";
 import Icon from "@/components/Icon.jsx";
-import { MiniStats } from "@/components/ui";
+import { MiniStats, Segmented } from "@/components/ui";
 import { paymentMethods, productIcon } from "@/lib/constants.js";
 import { money, todayISO } from "@/lib/format.js";
 import { useDragScroll } from "@/hooks/useDragScroll.js";
-import PosTransactions from "./PosTransactions.jsx";
+import PosTransactions, { transactionCount } from "./PosTransactions.jsx";
 import "./pos.css";
 
 // A counter sale has no member account, so Customer Credit is not offered here.
@@ -53,8 +53,25 @@ function CartLine({ line, onStep, onRemove }) {
   );
 }
 
-/** POS → Sales: product list as the main focus, with the cart fixed full-height on the right. */
+/** POS → Sales, in two tabs: Sell (products + cart) and Transactions (saved counter sales). */
 export default function PosSalesPage() {
+  const state = useStore();
+  const [tab, setTab] = useState("sell");
+  return (
+    <>
+      <div className="toolbar pos-tabs">
+        <Segmented label="POS Sales section" value={tab} onChange={setTab} options={[
+          { id: "sell", label: "Sell", icon: "cart" },
+          { id: "transactions", label: "Transactions", icon: "receipt", count: transactionCount(state, "sales") }
+        ]} />
+      </div>
+      {tab === "sell" ? <SellTab /> : <PosTransactions kind="sales" />}
+    </>
+  );
+}
+
+/** Product list as the main focus, with the cart fixed full-height on the right. */
+function SellTab() {
   const state = useStore();
   const { run } = useStoreApi();
   const { notify, search, setSearch, cart, setCart } = useUi();
@@ -151,8 +168,6 @@ export default function PosSalesPage() {
           </div>
         )}
       </section>
-
-      <div className="report-row"><PosTransactions defaultTab="sales" /></div>
 
       {/* Small screens: a bottom bar opens the cart as a drawer. */}
       <button type="button" className="pos-cart-bar" onClick={() => setCartOpen(true)} aria-label="Open cart">

@@ -30,6 +30,8 @@ export function loadState() {
   parsed.arcade ??= { stock: 50, log: [] };
   // Admin / User sign-in accounts.
   if (!Array.isArray(parsed.users) || !parsed.users.length) parsed.users = defaultUsers();
+  // Email / phone for Forgot password; accounts saved before that start with none.
+  parsed.users.forEach((user) => { user.email ??= ""; user.phone ??= ""; });
   parsed.tables.forEach((table) => { table.nonAcRate ??= parsed.settings.defaultNonAcRate; });
   parsed.sessions.forEach((session) => { session.hourType ??= "ac"; });
   return parsed;
