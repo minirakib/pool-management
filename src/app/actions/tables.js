@@ -54,7 +54,7 @@ export function closeSession(s, tableId, values) {
   }
   table.status = "available";
   s.sessions = s.sessions.filter((entry) => entry.id !== session.id);
-  return { bill, method };
+  return { bill, method, receipt };
 }
 
 export function releaseMaintenance(s, tableId) {

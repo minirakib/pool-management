@@ -177,8 +177,8 @@ td.table-primary, .data-table td .table-primary + .table-sub { font-variant-nume
 
 /* ---------- Modal ---------- */
 .modal-backdrop { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px; background: rgba(2, 6, 4, .72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: fade-in .16s ease; }
-.modal { position: relative; width: min(580px, 100%); max-height: min(90vh, 920px); overflow: auto; border: 1px solid var(--color-border-strong); border-radius: 18px; background: var(--bg-panel); box-shadow: var(--shadow-pop), 0 0 0 1px color-mix(in srgb, var(--color-primary) 10%, transparent); animation: modal-in .22s cubic-bezier(.2,.8,.2,1); }
-.modal.modal-wide { width: min(800px, 100%); }
+.modal { position: relative; width: min(640px, 100%); max-height: calc(100dvh - 40px); overflow: auto; border: 1px solid var(--color-border-strong); border-radius: 18px; background: var(--bg-panel); box-shadow: var(--shadow-pop), 0 0 0 1px color-mix(in srgb, var(--color-primary) 10%, transparent); animation: modal-in .22s cubic-bezier(.2,.8,.2,1); }
+.modal.modal-wide { width: min(960px, 100%); }
 .modal-header { position: sticky; top: 0; z-index: 2; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 22px 16px; border-bottom: 1px solid var(--color-border); background: linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 8%, var(--bg-panel)), var(--bg-panel)); }
 .modal-header::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, var(--color-primary-line), transparent); }
 .modal-header h2 { margin: 0 0 4px; font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: .05em; }
