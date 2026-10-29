@@ -20,7 +20,7 @@ export function saveBooking(s, bookingId, values) {
   const candidate = { id: bookingId || uid("bok"), customerId: values.customerId, tableId: values.tableId || "", date: values.date, start: values.start, duration: Number(values.duration), phone: values.phone.trim(), status: values.status, notes: values.notes.trim() };
   if (bookingOverlaps(s, candidate, bookingId)) fail("That table already has a confirmed booking during this time.");
   const previous = s.bookings.find((entry) => entry.id === bookingId);
-  if (previous) Object.assign(previous, candidate);
+  if (previous) { Object.assign(previous, candidate); delete previous.autoStarted; }
   else s.bookings.push(candidate);
   return `Booking for ${customer?.name || "guest"} saved.`;
 }

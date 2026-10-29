@@ -11,6 +11,7 @@ import { billingLabel, customerName, gameMinutesOf, hourTypeLabel, rateFor, rate
 import { money, shortDate, timeLabel, todayISO } from "@/lib/format.js";
 import { clothFor } from "@/lib/theme.js";
 import { useTableActions } from "../useTableActions.jsx";
+import { PlayersPanel } from "./PlayersPanel.jsx";
 import { muted, tableChargeLabel } from "./shared.jsx";
 
 export function TableDetailsModal({ tableId }) {
@@ -58,7 +59,8 @@ export function TableDetailsModal({ tableId }) {
       </div>
 
       {session ? (
-        <section className="detail-section">
+        <section className="detail-section session-grid">
+          <div className="session-main">
           <div className="profile-hero">
             <Avatar name={name} />
             <div><strong>{name}</strong><span style={muted}>Started {timeLabel(session.originalStartedAt || session.startedAt)} · {hourTypeLabel(session.hourType)} {money(rateFor(table, session.hourType))}/hr · {billingLabel(session.billingMode, gameMinutesOf(session, state.settings))}</span></div>
@@ -67,12 +69,14 @@ export function TableDetailsModal({ tableId }) {
             <div className="breakdown-row"><span>{table.status === "paused" ? "Played (paused)" : "Playing time"}</span><strong><Timer session={session} className="" /></strong></div>
             <div className="breakdown-row"><span>{tableChargeLabel(session, "Table charge")}</span><strong><LiveAmount session={session} table={table} field="tableCharge" /></strong></div>
             {session.products.map((item) => (
-              <div key={item.productId} className="breakdown-row"><span>{item.name} × {item.qty}</span><strong>{money(item.qty * item.price)}</strong></div>
+              <div key={item.productId + (item.player || "")} className="breakdown-row"><span>{item.name} × {item.qty}{item.player ? ` · ${item.player}` : ""}</span><strong>{money(item.qty * item.price)}</strong></div>
             ))}
             {previousBalance > 0 && <div className="breakdown-row"><span>Previous balance</span><strong>{money(previousBalance)}</strong></div>}
             <div className="breakdown-row total"><span>Live total</span><strong><LiveAmount session={session} table={table} previousBalance={previousBalance} /></strong></div>
           </div>
           {session.notes && <p className="muted" style={{ fontSize: 12, margin: "10px 0 0" }}>Notes: {session.notes}</p>}
+          </div>
+          <PlayersPanel tableId={table.id} />
         </section>
       ) : (
         <p className="muted detail-empty">{table.status === "maintenance" ? "Out of play for service." : "No active session."}</p>

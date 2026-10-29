@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect } from "react";
+import { autoStartBookings } from "@/app/actions";
 import { HOME, ROUTES, routeOf } from "@/app/routes.js";
-import { useStorageSync } from "@/app/store.jsx";
+import { useStoreApi, useStorageSync } from "@/app/store.jsx";
 import { useUi } from "@/app/ui.jsx";
 import ErrorBoundary from "@/components/ErrorBoundary.jsx";
 import LoginPage from "@/features/auth/LoginPage.jsx";
@@ -21,6 +22,16 @@ export default function App() {
   const pageId = can(page) ? page : HOME;
   const Page = pages[pageId];
   const bare = !!routeOf(pageId).bare;
+  const { run } = useStoreApi();
+
+  // Confirmed bookings start their table automatically when the booked time arrives.
+  useEffect(() => {
+    if (!user || bare) return undefined;
+    const check = () => { try { if (run(autoStartBookings)) notify("A booked table has started its game.", "success", "Booking started"); } catch (e) { console.error(e); } };
+    check();
+    const id = setInterval(check, 15_000);
+    return () => clearInterval(id);
+  }, [user, bare, run, notify]);
 
   // Bare pages (the TV display) reload the new data themselves instead of asking.
   useStorageSync(useCallback(() => { if (!bare) notify("Demo data changed in another browser tab. Reload to view the latest saved data.", "info", "Local data updated"); }, [notify, bare]));

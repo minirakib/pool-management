@@ -33,7 +33,11 @@ export function loadState() {
   // Email / phone for Forgot password; accounts saved before that start with none.
   parsed.users.forEach((user) => { user.email ??= ""; user.phone ??= ""; });
   parsed.tables.forEach((table) => { table.nonAcRate ??= parsed.settings.defaultNonAcRate; });
-  parsed.sessions.forEach((session) => { session.hourType ??= "ac"; });
+  parsed.sessions.forEach((session) => {
+    session.hourType ??= "ac";
+    // Players were plain names in an earlier build; they are records now.
+    session.players = (session.players || []).map((p, i) => (typeof p === "string" ? { id: `ply-${i}-${p}`, name: p, customerId: null } : p));
+  });
   return parsed;
 }
 

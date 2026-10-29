@@ -53,7 +53,7 @@ export default function Receipt({ details, settings }) {
       {details.duration ? <Row label="Duration" value={durationLabel(details.duration)} /> : null}
       <div className="receipt-rule"></div>
       {details.tableCharge ? <Row label="Table time" value={money(details.tableCharge)} /> : null}
-      {(details.products || []).map((item, i) => <Row key={i} label={`${item.name} ×${item.qty}`} value={money(item.price * item.qty)} />)}
+      {(details.products || []).map((item, i) => <Row key={i} label={`${item.name} ×${item.qty}${item.player ? ` (${item.player})` : ""}`} value={money(item.price * item.qty)} />)}
       {details.previousBalance ? <Row label="Previous balance" value={money(details.previousBalance)} /> : null}
       {details.discount ? <Row label="Discount" value={`−${money(details.discount)}`} /> : null}
       <div className="receipt-rule"></div>

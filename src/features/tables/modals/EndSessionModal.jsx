@@ -14,7 +14,7 @@ import { customerName, gameMinutesOf, hourTypeLabel, rateFor, sessionBreakdown, 
 import { money, timeLabel } from "@/lib/format.js";
 import { muted, tableChargeLabel } from "./shared.jsx";
 
-const METHOD_ICONS = { Cash: "cash", bKash: "bolt", Nagad: "bolt", Card: "wallet", "Customer Credit": "user" };
+const METHOD_ICONS = { Cash: "cash", bKash: "bolt", Nagad: "bolt", Rocket: "bolt", Upay: "bolt", "Bank transfer": "wallet", Card: "wallet", "Customer Credit": "user" };
 const QUICK_DISCOUNTS = [5, 10, 15];
 
 /** Bill split calculator on the payment side. Follows the live total, discount included. */
@@ -111,7 +111,7 @@ export function EndSessionModal({ tableId }) {
           <div className="breakdown-list">
             <div className="breakdown-row"><span>{tableChargeLabel(session, "Table charges")}</span><strong><LiveAmount session={session} table={table} field="tableCharge" /></strong></div>
             {session.products.length
-              ? session.products.map((item) => <div key={item.productId} className="breakdown-row"><span>{item.name} × {item.qty}</span><strong>{money(item.price * item.qty)}</strong></div>)
+              ? session.products.map((item) => <div key={item.productId + (item.player || "")} className="breakdown-row"><span>{item.name} × {item.qty}{item.player ? ` · ${item.player}` : ""}</span><strong>{money(item.price * item.qty)}</strong></div>)
               : <div className="breakdown-row muted-row"><span>No products added</span><strong>{money(0)}</strong></div>}
             {previousBalance > 0 && <div className="breakdown-row"><span>Previous balance</span><strong>{money(previousBalance)}</strong></div>}
             <div className="breakdown-row subtotal"><span>Subtotal</span><strong><LiveAmount session={session} table={table} previousBalance={previousBalance} /></strong></div>

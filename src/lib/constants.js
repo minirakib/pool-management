@@ -1,13 +1,13 @@
 export const categories = ["Standard", "Premium", "VIP", "Billiards"];
 export const expenseCategories = ["Rent", "Electricity", "Staff Salary", "Maintenance", "Equipment", "Internet", "Cleaning", "Other"];
-export const expenseMethods = ["Cash", "bKash", "Nagad", "Card", "Bank transfer"];
+export const expenseMethods = ["Cash", "bKash", "Nagad", "Rocket", "Upay", "Card", "Bank transfer"];
 /** Icon per product category; custom categories fall back to a box. Categories themselves live in state.productCategories. */
 const PRODUCT_ICONS = { Water: "droplet", "Soft Drinks": "bottle", "Tea & Coffee": "cup", Accessories: "cue", Snacks: "cookie" };
 export const productIcon = (category) => PRODUCT_ICONS[category] || "box";
-export const paymentMethods = ["Cash", "bKash", "Nagad", "Card", "Customer Credit"];
+export const paymentMethods = ["Cash", "bKash", "Nagad", "Rocket", "Upay", "Card", "Bank transfer", "Customer Credit"];
 /** Room type chosen when a game starts; each table has its own AC and Non-AC hourly rate. */
 export const hourTypes = [["ac", "AC Hour"], ["nonac", "Non-AC Hour"]];
-export const salaryMethods = ["Cash", "Bank transfer", "bKash", "Nagad"];
+export const salaryMethods = ["Cash", "Bank transfer", "bKash", "Nagad", "Rocket", "Upay"];
 
 /** Snooker board (cloth) colours. CSS presets live in styles/tables.css under [data-cloth]. */
 export const clothColors = [

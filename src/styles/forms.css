@@ -85,3 +85,65 @@ input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:foc
 .arcade-price-form input, .pos-discount-input input, .arcade-qty input { min-height: 0; padding: 0 6px; border: 0; box-shadow: none; }
 .arcade-price-form label, .pos-discount-input, .arcade-qty label { transition: border-color .15s, box-shadow .15s; }
 .arcade-price-form label:focus-within, .pos-discount-input:focus-within, .arcade-qty label:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+
+/* Start game: add custom player names */
+.name-adder { display: flex; gap: 8px; }
+.name-adder input { flex: 1; min-width: 0; }
+.player-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.player-chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-radius: 999px; border: 1px solid var(--color-primary); background: color-mix(in srgb, var(--color-primary) 14%, transparent); font-weight: 600; font-size: 13px; }
+.player-chip .icon { width: 14px; height: 14px; }
+.player-chip button { display: grid; place-items: center; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, currentColor 14%, transparent); color: inherit; cursor: pointer; }
+.player-chip button:hover { background: color-mix(in srgb, currentColor 28%, transparent); }
+.player-chip button .icon { width: 12px; height: 12px; }
+.player-count { margin-left: 8px; font-style: normal; font-weight: 600; opacity: .7; }
+.customer-tile:disabled { opacity: .45; cursor: not-allowed; }
+.customer-tile { text-align: left; color: inherit; font: inherit; }
+
+/* Running table: session + players */
+.session-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.session-main { display: grid; gap: 12px; min-width: 0; }
+.session-main .breakdown-list { margin: 0; }
+.session-main .total { font-size: 1.05em; }
+.players-panel { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--color-border); border-radius: 14px; background: var(--bg-raised); min-width: 0; }
+.players-head { display: flex; align-items: center; justify-content: space-between; }
+.players-head span { display: inline-flex; align-items: center; gap: 8px; color: var(--color-text-faint); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.players-head .icon { width: 14px; height: 14px; }
+.players-count { min-width: 26px; padding: 2px 9px; border-radius: 999px; background: var(--color-primary-soft); color: var(--color-primary-ink); font-size: 12px; text-align: center; }
+.players-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.players-empty { margin: 0; font-size: 13px; }
+.player-pick { display: inline-flex; align-items: center; border: 1px solid var(--color-border-strong); border-radius: 999px; background: var(--bg-panel); color: var(--color-text); font: inherit; font-size: 13px; font-weight: 600; overflow: hidden; }
+button.player-pick { padding: 7px 14px; cursor: pointer; }
+.player-pick.active { border-color: var(--color-primary); background: var(--color-primary-soft); color: var(--color-primary-ink); }
+.player-pick-main { display: inline-flex; align-items: center; gap: 8px; padding: 5px 6px 5px 6px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.player-pick-main:disabled { cursor: default; }
+.player-pick-main:not(:disabled):hover { color: var(--color-primary-ink); }
+.player-dot { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: color-mix(in srgb, var(--color-primary) 22%, transparent); color: var(--color-primary-ink); font-style: normal; font-size: 11px; font-weight: 800; }
+.player-pick-main { padding-right: 4px; }
+.player-remove { display: grid; place-items: center; width: 24px; height: 24px; margin-right: 5px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--color-text-faint); cursor: pointer; }
+.player-remove:hover { background: color-mix(in srgb, var(--color-danger, #e5484d) 20%, transparent); color: var(--color-danger, #e5484d); }
+.player-remove .icon { width: 12px; height: 12px; }
+.players-add { display: grid; gap: 8px; }
+.players-add select, .players-add input { width: 100%; }
+@media (max-width: 760px) { .session-grid { grid-template-columns: 1fr; } }
+
+/* Add products: cart */
+.pick-tile { position: relative; }
+.pick-tile:disabled { opacity: .5; cursor: not-allowed; }
+.pick-badge { position: absolute; top: -7px; right: -7px; min-width: 22px; height: 22px; padding: 0 6px; display: grid; place-items: center; border-radius: 999px; background: var(--color-primary); color: #04130b; font-size: 12px; font-weight: 800; }
+.pcart-lines { display: grid; gap: 10px; }
+.pcart-line { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; }
+.pcart-name { display: grid; min-width: 0; }
+.pcart-name strong { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pcart-name small { color: var(--color-text-faint); font-size: 11.5px; }
+.pcart-price { min-width: 54px; text-align: right; font-variant-numeric: tabular-nums; font-size: 13.5px; }
+.pcart-total { padding-top: 10px; border-top: 1px dashed var(--color-border-strong); }
+.pcart-total strong { color: var(--color-gold); }
+.pick-grid { overflow-x: hidden; padding: 9px 9px 4px 2px; }
+.pcart-lines { gap: 0; }
+.pcart-line { grid-template-columns: 22px minmax(0, 1fr) 92px 60px; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--color-border); }
+.pcart-no { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--color-primary-soft); color: var(--color-primary-ink); font-size: 11px; font-weight: 800; }
+.pcart-line .qty-control { justify-self: center; display: grid; grid-template-columns: 26px 1fr 26px; align-items: center; width: 92px; }
+.pcart-line .qty-control button { width: 26px; height: 26px; min-height: 0; padding: 0; border-radius: 8px; }
+.pcart-line .qty-control span { text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pcart-price { min-width: 0; }
+.pcart-total { margin-top: 2px; padding: 12px 0 0; border-top: 0; }
