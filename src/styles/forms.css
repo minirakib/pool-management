@@ -147,3 +147,8 @@ button.player-pick { padding: 7px 14px; cursor: pointer; }
 .pcart-line .qty-control span { text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
 .pcart-price { min-width: 0; }
 .pcart-total { margin-top: 2px; padding: 12px 0 0; border-top: 0; }
+
+/* Keep the table artwork's balls and live badge inside it, under the sticky modal header and footer. */
+.snooker-art { isolation: isolate; }
+.modal-header { z-index: 6; }
+.modal-footer { z-index: 6; }
